@@ -1,0 +1,5 @@
+window, .titlebar, decoration {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+}

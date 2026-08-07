@@ -1,0 +1,26 @@
+# zsh
+export ZSH="$HOME/.oh-my-zsh"
+
+# theming
+cat ~/.cache/wallust/sequences
+ZSH_THEME="vira"
+COMPLETION_WAITING_DOTS="true"
+
+# plugins
+plugins=(git)
+
+# some bullshit
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+HIST_STAMPS="dd.mm.yy"
+
+# scripting
+source $ZSH/oh-my-zsh.sh
+if [[ $TERM = "xterm-kitty" ]]; then ~/.config/kitty/startup.sh; fi
+
+# environment
+source $ZSH_CUSTOM/als.zsh
+source $ZSH_CUSTOM/env.zsh
+
+# greetings and salutations
+fastfetch -l arch --logo-padding-left "$(( ( $(tput cols) - 80 ) / 2 ))"
+echo && figlet -cf tmplr -w $COLUMNS "$(shuf -n 1 $ZSH_CUSTOM/zsh-greets)"
