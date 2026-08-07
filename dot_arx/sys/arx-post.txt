@@ -1,0 +1,160 @@
+>| INKERNEL EMERGENCE
+###	setting up wifi (again)
+#	start networkmanager
+$ systemctl enable NetworkManager && systemctl start NetworkManager
+#	assure the device is on
+$ nmcli radio wifi on
+#	list networks
+$ nmcli dev wifi list
+#	connect
+$ nmcli dev wifi connect $SSID
+#	assure its on
+$ nmcli connection show
+$ ping -c 4 ping.archlinux.org
+
+###	obligatory postinstall fetch
+#	sync and run reflector to get good pkg download speeds
+$ pacman -Syu
+$ reflector --verbose -c $COUNTRY -l 32 -p https --sort rate --save /etc/pacman.d/mirrorlist
+#	go fetch
+$ pacman -S fastfetch
+$ fastfetch
+
+###	set up users
+#	create sudo group
+$ groupadd sudo
+#	add the $USER
+$ sudo useradd -m --btrfs-subvolume-home -G sudo $USER
+#	check the subvolume really exists
+$ btrfs subvolume list /home
+#	set the user password
+$ passwd $USER
+#	make sudo group give sudo privilages
+$ visudo
+#>	uncomment "%sudo ALL=(ALL:ALL) ALL"
+##>	this is vi so you write with ":w" and quit with ":q"
+#	log back in as the user in question
+$ logout
+
+$HOSTNAME login: $USER
+Password: $USERpswd
+
+###	set up swap on zram
+#	install the generator
+$ pacman -S zram-generator
+#	edit the config
+$ sudo -e /etc/systemd/zram-generator.conf
+--- BEGIN TEXT EDIT BLOCK ---
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+--- END TEXT EDIT BLOCK ---
+#	get it working
+$ reboot
+|<
+
+>| INFOSEC
+###	check cpu vulnerabilities
+$ grep -r . /sys/devices/system/cpu/vulnerabilities/
+
+###	set up firewall
+#	install
+$ pacman -S iptables
+#	start the service
+$ systemctl enable iptables && systemctl start iptables
+
+###	remove permissions
+$ chmod 000 /etc/nftables.conf
+$ chmod 000 /boot
+$ chmod 000 /etc/crypttab.initramfs
+
+###	configure password and sudo behaviour
+#	set $PWD_DELAY in microseconds
+$ sudo -e /etc/pam.d/system-login
+#>	append "auth	optional	pam_faildelay.so delay=$PWD_DELAY" after in the "auth" part of the file at the top
+#	change the lockout settings
+$ sudo -e /etc/security/faillock.conf
+#	make su only available to users in the wheel group
+$ sudo -e /etc/pam.d/su
+#>	comment out "auth	sufficient	pam_rootok.so"
+##>	uncomment "auth	required	pam_wheel.so use_uid"
+###>	ditto for /etc/pam.d/su-l
+#	edit the amount of time sudo will let you run commands as the superuser ($SUDO_DURATION)
+$ visudo
+--- BEGIN TEXT EDIT BLOCK ---
+[ WRITE THIS AT THE END OF THE Defaults SECTION ]
+## Uncomment to modify the amount of time sudo will let you run commands
+## as the superuser. Format is in minutes.
+Defaults timestamp_timeout=$SUDO_DURATION
+--- END TEXT EDIT BLOCK ---
+#	make computer only accessible through the main accounts locally
+$ sudo -e /etc/security/access.conf
+--- BEGIN TEXT EDIT BLOCK ---
++:root:LOCAL
++:$USER:LOCAL
++:greeter:LOCAL
+-:ALL:ALL
+--- END TEXT EDIT BLOCK ---
+#>	write it after all the comments
+
+###	disable coredumps
+$ sudo -e /etc/systemd/coredump.conf
+#>	uncomment "#Storage=external" and change it to "Storage=none"
+
+###	deny ssh root login
+$ sudo -e /etc/ssh/sshd_config.d/20-deny_root.conf
+#>	should just read "PermitRootLogin no"
+
+###	set kernel lockdown mode
+$ echo "confidentiality"|sudo tee /sys/kernel/security/lockdown > /dev/null
+
+###	set up secure boot
+#	check secure boot is in setup mode
+$ sbctl status
+#>	if it isnt change it to setup mode in the firmware settings
+#	create & enroll keys
+$ sbctl create-keys
+$ sbctl enroll-keys -f
+#	check the keys are enrolled
+$ sbctl status
+#	get $FILE_TO_SIGN
+$ sbctl verify
+#	get the $KERNEL_IMAGE, which you also need to sign
+$ ls /boot/|grep "vmlinuz"
+$ sbctl sign -s $FILE_TO_SIGN
+$ sbctl sign -s /boot/$KERNEL_IMAGE
+#	double check everything that needs to be signed is signed
+$ sbctl verify
+#	reboot the system and turn secure boot on in the firmware settings
+$ reboot
+#>	make sure to set up a password for secure boot while youre at the firmware screen
+
+###	set up dnscrypt
+#	install
+$ pacman -S dnscrypt-proxy
+#	edit the config
+$ sudo -e /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+--- BEGIN TEXT EDIT BLOCK ---
+server_names = ['cloudflare', 'cloudflare-ipv6']
+listen_addresses = ['127.0.0.1:53', '[::1]:53']
+ipv6_servers = true
+require_dnssec = true
+--- END TEXT EDIT BLOCK ---
+#	edit the resolv config
+$ sudo -e /etc/resolv.conf
+--- BEGIN TEXT EDIT BLOCK ---
+nameserver ::1
+nameserver 127.0.0.1
+options edns0
+--- END TEXT EDIT BLOCK ---
+#	protect the resolv config from being overwritten
+$ chattr +i /etc/resolv.conf
+#	double check no programs are using dnscrypt's port
+$ ss -lp 'sport = :domain'
+#	send it
+$ systemctl enable dnscrypt-proxy && systemctl start dnscrypt-proxy
+|<
+
+[ see arx-misc ]

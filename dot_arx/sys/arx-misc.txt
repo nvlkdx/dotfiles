@@ -1,0 +1,119 @@
+###	switching the bootusb out
+--- BEGIN PLAINTEXT GUIDE ---
+ok so all you really have to do is go thru the following archinstall.txt sections:
+- make boot partition on ufd
+- mount the partitions
+- install (ONLY install linux-hardened)
+- generate fstab
+- create boot key for easier unlocking
+- make crypttab entry for the boot partition
+- make the initramfs (ONLY make)
+- install grub
+- hope for the best
+use your brain numbnuts
+--- END PLAINTEXT GUIDE ---
+
+###	switching out the boot passphrase for the bootusb
+#	get $BOOTprt
+$ lsblk
+#	get $KEYSLOT
+$ sudo luksDump /dev/$BOOTprt
+#	change the key
+$ cryptsetup -M luks2 -c aes-xts-plain64 -h sha512 -i $ITERTIME --pbkdf argon2id -y luksChangeKey /dev/$BOOTprt -S $KEYSLOT
+#>	you'll have to type in the current passiword first and then the new one (it'll make you verify both)
+
+###	switching out the keyfiles for your drives
+##	do all of this as root
+#	rename the old key
+$ mv /root/crypt/$SSDNYM-key.img /root/crypt/XPRD_$SSDNYM-key.img
+#	create a new key ($KEYSIZE should probably be 8)
+$ dd if=/dev/urandom of=/root/crypt/$SSDNYM-key.img bs=512 count=$KEYSIZE iflag=fullblock
+#	get $DRIVE
+$ lsblk --nvme
+#	change the key
+$ cryptsetup -M luks2 -c aes-xts-plain64 -h sha512 -i $KF-ITERTIME --pbkdf argon2id --header /root/crypt/$SSDNYM-header.img --key-file /root/crypt/XPRD_$SSDNYM-key.img luksChangeKey /dev/$DRIVE /root/crypt/$SSDNYM-key.img
+#	shred and remove the obsolete key
+$ shred -n 32 /root/crypt/XPRD_$SSDNYM-key.img
+$ rm /root/crypt/XPRD_$SSDNYM-key.img
+#	regenerate the initcpio
+$ mkinitcpio -P
+
+###	remove the bootusb safely
+#	get $BOOT-UFD, $EFIprt
+$ lsblk
+#	unmount everything
+$ sudo umount /boot
+$ sudo umount /efi
+#	close the cryptocontainer
+$ sudo cryptsetup close /dev/mapper/BOOTES
+#	eject
+$ eject /dev/$BOOT-UFD
+
+###	creating your very own system user
+$ useradd --system -s /usr/bin/nologin $USER
+
+###	list files with suid bits
+$ find / -perm "/u=s,g=s" -type f 2>/dev/null
+
+###	creating an lvm snapshot
+$ lvcreate --size $SNAPSHOT-SIZE --snapshot --name $SNAPSHOT /dev/$SSDNYM/$LV
+
+###	clear the package cache
+$ paccache -r
+
+###	manually configure grub to be able to unlock the boot partition
+#	create the config for the boot partition
+$ ls -l /dev/disk/by-uuid/|grep "../../$BOOTprt" >> /boot/grub/grub_luksboot.conf
+$ nano /boot/grub/grub_$BOOTprt.conf
+--- BEGIN TEXT EDIT BLOCK ---
+cryptomount -u $BOOTprt-UUID
+
+set prefix=(crypto0)/grub
+set root=(crypto0)
+
+insmod normal
+normal
+--- END TEXT EDIT BLOCK ---
+#	make the grub image with the configuration
+$ grub-mkimage -p '(crypto0)/grub' -O x86_64-efi -c /boot/grub/grub_luksboot.conf -o /tmp/grubx64.efi luks2 ext2 part_gpt cryptodisk gcry_rijndael pbkdf2 gcry_sha512 tpm
+#	send it
+$ install -v /tmp/grubx64.efi /efi/EFI/GRUB/grubx64.efi
+
+###	configure dnscrypt to work with tor
+$ sudo -e /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+--- BEGIN TEXT EDIT BLOCK ---
+proxy = '$TOR-PROXY'
+--- END TEXT EDIT BLOCK ---
+
+###	initialize the system externally
+##	make sure to disable secure boot before doing any of this
+#	get $BOOTprt
+$ lsblk
+#	open the encrypted boot partition
+$ cryptsetup open /dev/$BOOTprt BOOTES
+#	mount the boot partition
+$ mount --mkdir /dev/mapper/BOOTES /mnt/boot
+#	create a new directory for the uncompressed initramfs and cd into it
+$ mkdir /tmp/initramfs
+$ cd /tmp/initramfs
+#	locate $KERNEL_INITRAMFS
+$ ls /mnt/boot
+#	unpack the image
+$ lsinitcpio -x  /mnt/boot/$KERNEL_INITRAMFS.img
+#	assure the encryption headers and keys are present
+$ ls /tmp/initramfs/root/crypt
+##	unlock the the system
+#	get $DRIVE
+$ lsblk
+#	open the encrypted container
+$ cryptsetup open --header /tmp/initramfs/root/crypt/$SSDNYM-header.img --key-file /tmp/initramfs/root/crypt/$SSDNYM-key.img /dev/$DRIVE $SSDNYM
+#	mount em
+$ mount /dev/mapper/AXIOMA-root /mnt
+$ mount --mkdir /dev/mapper/AXIOMA-usr /mnt/usr
+$ mount --mkdir /dev/mapper/ARXIVA-home /mnt/home
+#	you're done, you can even arch-chroot into the mounted system now if you like
+$ arch-chroot /mnt
+
+[ LINKS : https://wiki.archlinux.org/title/Nftables#Workstation | https://wiki.archlinux.org/title/SELinux#Installing_SELinux | https://wiki.archlinux.org/title/Pacman#Cleaning_the_package_cache ]
+
+[ see arx-inst ]

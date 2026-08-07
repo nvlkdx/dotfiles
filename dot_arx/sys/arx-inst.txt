@@ -1,0 +1,292 @@
+>| THE WORLD, THE WIDE, AND THE WEB
+###	 connect to internet
+#	 check rfkill is not enabled
+rfkill
+#	if it is
+$ rfkill unblock wlan
+#	check if network interface is listed
+$ ip link
+#	use iwctl to connect to wifi
+$ iwctl
+	# get $DEVICE and $ADAPTER
+[iwd]$ device list
+[iwd]$ adapter list
+#	if either of them arent on
+[iwd]$ device $DEVICE set-property Powered on
+[iwd]$ adapter $ADAPTER set-property Powered on
+#	then
+[iwd]$ station $DEVICE scan
+#	get $SSID
+[iwd]$ station $DEVICE get-networks
+#	send it
+[iwd]$ station $DEVICE connect $SSID
+#	gj now check ur connection
+[iwd]$ exit
+$ ping -c 4 ping.archlinux.org
+
+#	use lynx to surf the web
+$ lynx wiki.archlinux.org/title/Installation_guide/
+#	startpage works pretty well with lynx if u need 2 look somethin up
+$ lynx www.startpage.com
+|<
+
+>| INFOCHECKS
+#	set up font
+$ ls /usr/share/kbd/consolefonts/|less
+$ setfont $FONT
+#	ter-132b works well for smaller monitors
+
+#	check uefi bitness
+$ ls /sys/firmware/efi/efivars/
+#>	directory must exist
+$ cat /sys/firmware/efi/fw_platform_size
+#>	must return 64
+#	if either are incorrect rewrite the bootusb
+
+#	check clock
+$ timedatectl
+#	if its wrong
+$ timedatectl set-ntp true
+#	if that doesnt work
+$ systemctl start systemd-timesyncd.service
+
+##	check nvme drive logical sector size and format
+#	get $DRIVE
+$ lsblk -td
+$ nvme id-ns -H /dev/$DRIVE | grep "Relative Performance"
+#>	assure the sector size that is IN USE is 4096
+#>	if u need to enable advanced format on any nvme drive
+$ nvme format --lbaf=1 $DRIVE
+
+#	check tpm support 
+$ cat /sys/class/tpm/tpm0/device/description
+#>	must return "TPM 2.0 Device"
+$ systemd-analyze has-tpm2
+#>	must return "yes"
+
+#	check modules
+#	NECESSARY MODULES 4 THIS INSTALLATION: dm_crypt
+$ lsmod | grep $MODULE
+#	if not installed first check if its a real module
+$ modinfo $MODULE
+#	enable it with modprobe
+$ modprobe $MODULE
+#	then check again
+|<
+
+>| THE GOOD SHIT
+###	wipe disks
+#	get $DISK
+$ fdisk -l|less
+#	create container
+$ cryptsetup open --type plain --key-file /dev/urandom (--sector-size 4096) /dev/$DISK wipe
+#	verify that container exists
+$ lsblk
+#>	must return crypt block "wipe" as a subset of the disk to be cleared
+#	send it
+$ dd if=/dev/zero of=/dev/mapper/wipe status=progress bs=1M
+#	wait for it to wipe & then check if it worked
+$ od /dev/$DISK
+#	close the container
+$ cryptsetup close wipe
+###>	do this for all disks you plan on encrypting
+
+###	make boot partitions on ufd
+#	get $BOOT_UFD
+$ fdisk -l|less
+#	partition
+$ fdisk /dev/$BOOT_UFD
+#>	TAKE NOTE to do [g] first to create a GPT
+
+#	asterisk means default
+--- BEGIN fdisk PARTITION GUIDE TABLE ---
+#	128 GB UFD [$BOOT-UFD] "BOOTES":
+#	START	SIZE	TYPE	VARIABLE
+1	2048	+1G	1	$EFIprt
+2	*	*	*	$BOOTprt
+--- END fdisk PARTITION GUIDE TABLE ---
+#>	[w] to write or [q] to quit
+
+#	format partition 1 ($EFIprt) as FAT32
+$ mkfs.fat -F 32 /dev/$EFIprt
+##	decide on $ITERTIME in milliseconds
+#	encrypt and format partition 2 ($BOOTprt)
+$ cryptsetup -M luks2 -c aes-xts-plain64 -s 512 -h sha512 -i $ITERTIME --pbkdf argon2id -y luksFormat /dev/$BOOTprt
+$ cryptsetup open /dev/$BOOTprt BOOTES
+$ mkfs.ext4 /dev/mapper/BOOTES
+
+###	encrypting the drives
+##	decide on a $KEYSIZE [the article im referencing says 4 is ok, though i suspect 8 is better] and $KF_ITERTIME (the $ITERTIME for containers encrypted with keyfiles)
+#	create the keyfile
+$ dd if=/dev/urandom of=/root/$SSDNYM-key.img bs=512 count=$KEYSIZE iflag=fullblock
+#	designate the space for the header
+$ truncate -s 16M /root/$SSDNYM-header.img
+#	get visual reminder of which drive is which
+$ lsblk --nvme
+#	encrypt the drive
+$ cryptsetup -M luks2 -c aes-xts-plain64 -s 512 -h sha512 -i $KF_ITERTIME --pbkdf argon2id --sector-size 4096 luksFormat /dev/$DRIVE --header /root/$SSDNYM-header.img --key-file /root/$SSDNYM-key.img
+#>	[see again the encryption options table on the arch wiki]
+#	open the encrypted container
+$ cryptsetup open /dev/$DRIVE --header $SSDNYM-header.img --key-file $SSDNYM-key.img $SSDNYM
+###>	repeat this section for AXIOMA and ARXIVA in place of $SSDNYM
+
+>| CONTINUING WITH fdisk AND NO LVM
+###	partition disks
+$ fdisk /dev/mapper/$SSDNYM-mapper
+#>	TAKE NOTE to do [g] first to create a GPT
+
+#	asterisk means default
+--- BEGIN fdisk PARTITION GUIDE TABLEs ---
+#	1TB PCIe-NVMe-SSD $DISK "AXIOMA":
+#	START	SIZE	TYPE	VARIABLE
+1	2048	+128G	23	$ROOTprt
+2	*	*	48	$USERprt
+
+#	2TB PCIe-NVMe-SSD $DISK "ARXIVA":
+#	START	SIZE	TYPE	VARIABLE
+1	2048	*	42	$HOMEprt
+--- END fdisk PARTITION GUIDE TABLEs ---
+#>	[w] to write or [q] to quit
+
+#	make the system realize those partitions exist
+$ partprobe /dev/mapper/$SSDNYM-mapper
+|<
+
+>| CONTINUING WITH LVM
+###	create all necessary lvm abstractions
+#	create the physical volumes
+$ pvcreate /dev/mapper/AXIOMA
+$ pvcreate /dev/mapper/ARXIVA
+#	create the volume groups
+$ vgcreate AXIOMA /dev/mapper/AXIOMA
+$ vgcreate ARXIVA /dev/mapper/ARXIVA
+#	create the logical volumes
+$ lvcreate -L 128G -n root AXIOMA
+$ lvcreate -l 100%FREE -n usr AXIOMA
+$ lvcreate -l 100%FREE -n home ARXIVA
+#	reduce the size of the root volume to allow for e2scrub later on
+$ lvreduce -L -256M AXIOMA/root
+|<
+
+###	check if your new partitions exist
+$ ls /dev/mapper/
+#>	get $ROOTprt_mapper, $USERprt_mapper, $HOMEprt_mapper
+#	make filesystems
+$ mkfs.btrfs /dev/mapper/$ROOTprt_mapper
+$ mkfs.btrfs /dev/mapper/$USERprt_mapper
+$ mkfs.btrfs /dev/mapper/$HOMEprt_mapper
+
+###	mount the partitions
+$ mount /dev/mapper/$ROOTprt_mapper /mnt
+$ mount --mkdir /dev/mapper/$USERprt_mapper /mnt/usr
+$ mount --mkdir /dev/mapper/$HOMEprt /mnt/home
+$ mount --mkdir /dev/mapper/$BOOTprt_mapper /mnt/boot
+$ mount --mkdir /dev/$EFIprt /mnt/efi
+
+###	install
+#	configure pacman to take advantage of maximum parallel threads
+$ lscpu|grep "(s) per"
+#>	get $THREADS by multiplying the two outputted digits together
+$ nano /etc/pacman.conf
+#	uncomment "ParallelDownloads" and set it to min(8,$THREADS)
+#	rank mirrors
+$ reflector --verbose -c $COUNTRY -l 32 -p https --sort rate --save /etc/pacman.d/mirrorlist
+
+###	send it
+#	see the [CORE] section in arx-pkgs to know which packages to install
+# pacstrap -K /mnt $PACKAGES
+|<
+
+>| AFTERPARTY
+###	generate fstab
+$ genfstab -U /mnt >> /mnt/etc/fstab
+#	check fstab for mistakes
+$ cat /mnt/etc/fstab
+#	if there are any, correct them
+$ nano /mnt/etc/fstab
+
+###	copy important files into the new system
+$ mkdir /mnt/root/crypt
+$ cp /root/* /mnt/root/crypt
+
+###	chroot into the new system
+$ arch-chroot /mnt
+
+###	set the timezone as UTC
+$ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+#	generate /etc/adjtime
+$ hwclock --systohc
+
+###	set up locale
+$ nano /etc/locale.gen
+#>	uncomment "en_US.UTF-8 UTF-8"
+#	generate the locales
+$ locale-gen
+#	create configuration file
+$ echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+
+###	set up $HOSTNAME
+$ echo "$HOSTNAME" >> /etc/hostname
+
+###	create boot key for easier unlocking
+$ dd if=/dev/urandom of=/root/crypt/BOOTES-key.img bs=512 count=$KEYSIZE iflag=fullblock
+#	add the key directly to the boot partition
+$ cryptsetup -M luks2 -c aes-xts-plain64 -s 512 -h sha512 -i $KF_ITERTIME --pbkdf argon2id luksAddKey /dev/$BOOTprt /root/crypt/BOOTES-key.img
+
+###	edit the mkinitcpio config
+$ nano /etc/mkinitcpio.conf
+--- BEGIN TEXT EDIT BLOCK ---
+MODULES=(ext4)
+FILES=(/root/crypt/BOOTES-key.img /root/crypt/AXIOMA-key.img /root/crypt/AXIOMA-header.img /root/crypt/ARXIVA-key.img /root/crypt/ARXIVA-header.img)
+HOOKS=(base systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)
+--- END TEXT EDIT BLOCK ---
+
+###	make crypttab entry for the boot partition
+#	get the id of $BOOTprt
+$ ls -l /dev/disk/by-id/|grep "../../$BOOTprt" >> /etc/crypttab.initramfs
+#	trim it
+$ nano /etc/crypttab.initramfs
+#>	line must read "BOOTES /dev/disk/by-id/$ID /root/crypt/BOOTES-key.img" 
+
+;;; make crypttab entires for AXIOMA and ARXIVA
+; get the id of $DISK
+# ls -l /dev/disk/by-id/|grep "../../$DISK" >> /etc/crypttab.initramfs
+; trim it
+# nano /etc/crypttab.initramfs
+: line must read "$SSDNYM /dev/disk/by-id/$ID /root/crypt/$SSDNYM-key.img header=/root/crypt/$SSDNYM-header.img"
+
+###	make the initramfs
+#	resolve some miscellaneous issues
+$ touch /usr/lib/firmware/qat_6xxx.bin /usr/lib/firmware/qat_6xxx_mmp.bin
+$ echo "FONT=ter-132b" > /etc/vconsole.conf
+#	make
+$ mkinitcpio -P
+
+###	set root password
+$ passwd
+
+###	install grub
+$ nano /etc/default/grub
+#>	uncomment "GRUB_ENABLE_CRYPTODISK=y"
+#	install
+$ grub-install --removable --target=x86_64-efi --efi-directory=/efi --modules="luks2 part_gpt cryptodisk gcry_rijndael pbkdf2 gcry_sha512 tpm" --disable-shim-lock --bootloader-id=GRUB
+#	make grub config file
+$ grub-mkconfig -o /boot/grub/grub.cfg
+#	copy grub into the default boot directory
+$ cp /efi/EFI/GRUB/grubx64.efi /efi/EFI/BOOT/bootx64.efi
+|<
+
+>| FIN
+###	exit chroot
+$ exit
+
+###	unmount all partitions
+$ umount -R /mnt
+#	if it wont let you find out why
+$ fuser -l
+
+###	hope for the best
+$ reboot
+|<
+
+[ see arx-post ]
