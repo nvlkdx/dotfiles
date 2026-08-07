@@ -1,0 +1,25 @@
+{
+  "colors": {
+    "color0": "000000",
+    "color1": "773333",
+    "color2": "dd9999",
+    "color3": "a06666",
+    "color4": "888888",
+    "color5": "999999",
+    "color6": "aaaaaa",
+    "color7": "c0c0c0",
+    "color8": "333333",
+    "color9": "773333",
+    "color10": "dd9999",
+    "color11": "a06666",
+    "color12": "888888",
+    "color13": "999999",
+    "color14": "aaaaaa",
+    "color15": "c0c0c0"
+  },
+  "special": {
+    "background": "000000",
+    "foreground": "c0c0c0",
+    "cursor": "c0c0c0"
+  }
+}

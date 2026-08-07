@@ -1,0 +1,9 @@
+{
+	"style": {
+		"font": "MonaspiceKr NFM",
+		"borderWidth": 2,
+		"backgroundOpacity": 0.75,
+		"animationMultiplier": 2,
+		"sideMarginFrac": 1
+	}
+}
