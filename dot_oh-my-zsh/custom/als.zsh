@@ -17,6 +17,7 @@ ytdl() {
 cdgame() {
   cd $USR_GAME_DIR/$@
 }
+alias progsync='sync & watch -n 1 grep -e "Dirty:" /proc/meminfo'
 rl() {
   if [[ $1 == 'color' ]]; then
     cat ~/.cache/wallust/sequences
