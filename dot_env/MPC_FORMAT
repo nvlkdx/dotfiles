@@ -1,0 +1,1 @@
+export MPC_FORMAT='%title% \[ %albumartist% :: %album% :: ##%track% \]'

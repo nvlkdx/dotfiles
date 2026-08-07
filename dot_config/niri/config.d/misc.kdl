@@ -1,0 +1,49 @@
+hotkey-overlay {
+	skip-at-startup
+}
+
+prefer-no-csd
+
+screenshot-path "~/MDL/wastes/scr/%Y-%m-%d-%H-%M-%S.png"
+
+blur {
+	on
+	passes 2 
+	offset 1.5 
+	noise 0.02
+	saturation 0.5
+}
+
+overview {
+	zoom 0.666
+	workspace-shadow {
+		off
+		softness 40
+		spread 30
+		offset x=0 y=10
+	}
+}
+
+cursor {
+	xcursor-theme "future-cursors"
+	xcursor-size 36
+
+	hide-when-typing
+	hide-after-inactive-ms 1000
+}
+
+recent-windows {
+	debounce-ms 500
+
+	open-delay-ms 200
+
+	highlight {
+		padding 18
+		corner-radius 0
+	}
+
+	previews {
+		max-height 480
+		max-scale 0.5
+	}
+}

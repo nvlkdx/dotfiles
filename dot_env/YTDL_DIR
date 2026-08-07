@@ -1,0 +1,1 @@
+export YTDL_DIR="$HOME/.ytdl"

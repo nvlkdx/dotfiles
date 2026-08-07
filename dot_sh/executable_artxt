@@ -1,0 +1,219 @@
+#!/bin/zsh
+
+txt="$@"
+
+fontlist=('future')
+
+chfont() {
+	case "$1" in
+		"future")
+			typeset -gA fnt
+
+			fnt[CAP]=0
+
+			fnt[a]='┏━┓\n┣━┫\n╹ ╹'
+			fnt[b]='┏┓ \n┣┻┓\n┗━┛'
+			fnt[c]='┏━╸\n┃  \n┗━╸'
+			fnt[d]='╺┳┓\n ┃┃\n╺┻┛'
+			fnt[e]='┏━╸\n┣╸ \n┗━╸'
+			fnt[f]='┏━╸\n┣╸ \n╹  '  
+			fnt[g]='┏━╸\n┃╺┓\n┗━┛'
+			fnt[h]='╻ ╻\n┣━┫\n╹ ╹'
+			fnt[i]='╺┳╸\n ┃ \n╺┻╸'
+			fnt[j]=' ┏┓\n  ┃\n┗━┛'
+			fnt[k]='╻┏ \n┣┻┓\n╹ ╹'
+			fnt[l]='╻  \n┃  \n┗━╸'
+			fnt[m]='┏┳┓\n┃┃┃\n╹ ╹'
+			fnt[n]='┏┓╻\n┃┗┫\n╹ ╹'
+			fnt[o]='┏━┓\n┃ ┃\n┗━┛'
+			fnt[p]='┏━┓\n┣━┛\n╹  '
+			fnt[q]='┏━┓\n┃┓┃\n┗╋┛'
+			fnt[r]='┏━┓\n┣┳┛\n╹┗╸'
+			fnt[s]='┏━┓\n┗━┓\n┗━┛'
+			fnt[t]='╺┳╸\n ┃ \n ╹ '
+			fnt[u]='╻ ╻\n┃ ┃\n┗━┛'
+			fnt[v]='╻ ╻\n┃┏┛\n┗┛ '
+			fnt[w]='╻ ╻\n┃╻┃\n┗┻┛'
+			fnt[x]='╻ ╻\n┏╋┛\n╹ ╹'
+			fnt[y]='╻ ╻\n┗┳┛\n ╹ '
+			fnt[z]='╺━┓\n┏━┛\n┗━╸'
+
+			fnt[1]='╺┓ \n ┃ \n╺┻╸'
+			fnt[2]='┏━┓\n┏━┛\n┗━╸'
+			fnt[3]='┏━┓\n╺━┫\n┗━┛'
+			fnt[4]='╻ ╻\n┗━┫\n  ╹'
+			fnt[5]='┏━╸\n┗━┓\n┗━┛'
+			fnt[6]='┏━┓\n┣━┓\n┗━┛'
+			fnt[7]='┏━┓\n  ┃\n  ╹'
+			fnt[8]='┏━┓\n┣━┫\n┗━┛'
+			fnt[9]='┏━┓\n┗━┫\n┗━┛'
+			fnt[0]='┏━┓\n┃┃┃\n┗━┛'
+
+			fnt[tic]=' ┓ \n   \n   '
+			fnt[til]='   \n┏━┛\n   '
+			fnt[exc]=' ╻ \n ╹ \n ╹ '
+			fnt[cat]='┏━┓\n┃┣┛\n┗━╸'
+			fnt[hsh]='╋━╋\n┃ ┃\n╋━╋'
+			fnt[usd]='┏╋┓\n┗╋┓\n┗╋┛'
+			fnt[prc]='┏┓╻\n┏━┛\n╹┗┛'
+			fnt[crt]='┏━┓\n   \n   '
+			fnt[and]='┏━┓\n┣━╋\n┗━┻'
+			fnt[ast]='╻ ╻\n╺╋╸\n╹ ╹'
+			fnt[lbr]='┏━ \n┃  \n┗━ '
+			fnt[rbr]=' ━┓\n  ┃\n ━┛'
+			fnt[dsh]='   \n╺━╸\n   '
+			fnt[eql]='   \n╺━╸\n╺━╸'
+			fnt[und]='   \n   \n╺━╸'
+			fnt[add]=' ╻ \n╺╋╸\n ╹ '
+			fnt[lsb]='┏━ \n┃  \n┗━ '
+			fnt[rsb]=' ━┓\n  ┃\n ━┛'
+			fnt[bsl]='╻  \n┗━┓\n  ╹'
+			fnt[lcb]=' ┏╸\n╺┫ \n┗╸ '
+			fnt[rcb]='╺┓ \n ┣╸\n╺┛ '
+			fnt[bar]=' ╻ \n ┃ \n ╹ '
+			fnt[smc]='   \n ╹ \n ┛ '
+			fnt[apo]=' ╻ \n   \n   '
+			fnt[col]='   \n ╹ \n ╹ '
+			fnt[quo]='╻ ╻\n   \n   '
+			fnt[cma]='   \n   \n ┛ '
+			fnt[dot]='   \n   \n ╹ '
+			fnt[sls]='  ╻\n┏━┛\n╹  '
+			fnt[lth]='┏━ \n┃  \n┗━ '
+			fnt[gth]=' ━┓\n  ┃\n ━┛'	
+			fnt[int]='┏━┓\n ╺┛\n ╹ '
+
+			fnt[BRK]='   \n   \n   '
+			;;
+		*)
+			echo "[artxt!] catastrophic error while parsing fonts"
+			echo "[artxt/] aborting"
+			exit 1
+			;;
+		esac
+}
+
+sym() {
+	case $1 in
+		'') echo 'NUL' ;;
+		' ') echo 'BRK' ;;
+		"\n") echo 'NWL' ;;
+		'`') echo 'tic' ;;
+		'~') echo 'til' ;;
+		'!') echo 'exc' ;;
+		'@') echo 'cat' ;;
+		'#') echo 'hsh' ;;
+		'$') echo 'usd' ;;
+		'%') echo 'prc' ;;
+		'^') echo 'crt' ;;
+		'&') echo 'and' ;;
+		'*') echo 'ast' ;;
+		'(') echo 'lbr' ;;
+		')') echo 'rbr' ;;
+		'-') echo 'dsh' ;;
+		'_') echo 'und' ;;
+		'+') echo 'add' ;;
+		'=') echo 'eql' ;;
+		'[') echo 'lsb' ;;
+		']') echo 'rsb' ;;
+		'\') echo 'bsl' ;;
+		'{') echo 'lcb' ;;
+		'}') echo 'rcb' ;;
+		'|') echo 'bar' ;;
+		';') echo 'smc' ;;
+		"'") echo 'apo' ;;
+		':') echo 'col' ;;
+		'"') echo 'quo' ;;
+		',') echo 'cma' ;;
+		'.') echo 'dot' ;;
+		'/') echo 'sls' ;;
+		'<') echo 'lth' ;;
+		'>') echo 'gth' ;;
+		'?') echo 'int' ;;
+		*) echo 'NUL' ;;
+	esac
+}
+
+for i in {0..$#txt}; do txtarr+=("${txt:$i:1}"); done
+alfnum=(a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0)
+
+chfont future
+
+for i in {1..$#txtarr}; do
+	if ! (( ${alfnum[(Ie)${(L)txtarr[$i]}]} )); then
+		txtarr[$i]=$(sym ${txtarr[$i]})
+		if [[ ${txtarr[$i]} = 'bsl' ]]; then
+			case ${txtarr[$i+1]} in
+				'n')
+					if ! [[ ${txtarr[$i-1]} = 'bsl' ]]; then
+						txtarr[$i]='NUL'
+						txtarr[$i+1]="\n"
+					else
+						txtarr[$i-1]='NUL'
+					fi
+					;;
+				*) ;;
+			esac
+		fi
+	elif ! (( ${fnt[CAP]} == 1 )); then
+		txtarr[$i]=${(L)txtarr[$i]}
+	fi
+done
+
+txtarr=(${txtarr:#NUL})
+
+for i in {1..$#txtarr}; do
+	if [[ ${txtarr[$i]} == 'BRK' ]]; then
+		readahead=$i+1
+		brkchr=( ${(ps:\\n:)fnt[BRK]} )
+		for chr in ${txtarr[i+1,$(( ${txtarr[i+1,-1][(i)(BRK|NWL)]} + i - 1 ))]}; do
+			((readahead++))
+			txtart=( ${(ps:\\n:)fnt[$chr]} )
+			for o in {1..$#txtart}; do
+				while (( ${#tmprender[$o]} + ${#txtart[$o]} < ${#tmprender[$o-1]} - ${#txtart[$o-1]} )); do tmprender[$o]+=' '; done
+				tmprender[$o]+="${txtart[$o]}"
+			done
+		done
+		if (( readahead == i + 1 )); then continue; fi
+		if (( ${#lnrender[1]} + ${#tmprender[1]} > COLUMNS - ${#txtart[1]} )); then
+			if (( ${#tmprender[1]} > COLUMNS - ${#txtart[1]} )); then
+				for o in {1..$#lnrender}; do
+					if ! [[ ${lnrender[$o]} = '' ]]; then echo -e "${lnrender[$o]}"; fi
+					lnrender[$o]=''
+				done
+				tmprender=()
+				readahead=$i+1
+			else
+				for o in {1..$#lnrender}; do
+					if ! [[ ${lnrender[$o]} = '' ]]; then echo -e "${lnrender[$o]}"; fi
+					lnrender[$o]="${tmprender[$o]}"
+				done
+				tmprender=()
+			fi
+		else
+			for o in {1..$#brkchr}; do lnrender[$o]+="${brkchr[$o]}"; done
+			for o in {1..$#tmprender}; do
+				while (( ${#lnrender[$o]} < ${#lnrender[$o-1]} - ${#tmprender[$o-1]} )); do lnrender[$o]+=' '; done
+				lnrender[$o]+=${tmprender[$o]}
+			done
+			tmprender=()
+		fi
+	elif [[ ${txtarr[$i]} == 'NWL' ]]; then
+		for line in $lnrender; do echo -e "$line"; done
+		lnrender=()
+	else
+		if (( i < readahead )); then continue; fi
+		txtart=( ${(ps:\\n:)fnt[${txtarr[$i]}]} )
+		render=0
+		for o in {1..$#txtart}; do
+			while (( ${#lnrender[$o]} + ${#txtart[$o]} < ${#lnrender[$o-1]} )); do lnrender[$o]+=' '; done
+			if (( ${#lnrender[$o]} + ${#txtart[$o]} > COLUMNS - ${#txtart[$o]} )); then render=1; fi
+			lnrender[$o]+="${txtart[$o]}"
+		done
+		if (( render == 1 )); then
+			for line in $lnrender; do echo -e "$line"; done
+			lnrender=()
+		fi
+	fi
+done
+
+for line in $lnrender; do echo -e "$line"; done

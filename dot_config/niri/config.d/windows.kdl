@@ -1,0 +1,81 @@
+/// LAYERS \\\
+layer-rule {
+	match layer="background"
+	place-within-backdrop true
+}
+
+layer-rule {
+	match namespace="quickshell"
+	background-effect {
+		xray true
+		ignore-opacity true
+	}
+}
+
+/// WINDOWS \\\
+
+// GENERAL
+window-rule {
+	draw-border-with-background false
+	clip-to-geometry true
+	background-effect {
+		xray true
+		blur true
+	}
+}
+
+window-rule {
+	match is-focused=true
+	background-effect {
+		xray true
+		blur true
+		saturation 1
+		noise 0
+	}
+}
+
+window-rule {
+	match is-focused=false
+	opacity 0.9
+}
+
+window-rule {
+	match is-floating=true
+	shadow {
+		spread 8
+		offset x=16 y=16
+	}
+}
+
+// DESKTOP SHELL
+window-rule {
+	match title=r#"^dsh:w:"#
+	open-floating true
+	open-focused true
+	
+	background-effect {
+		xray true
+		blur false 
+		saturation 1
+		noise 0
+	}
+}
+
+include "shaders/dsh/open/crt.kdl"
+include "shaders/dsh/close/crt.kdl"
+
+window-rule {
+	match app-id=r#"kitty$"# title=r#"^dsh:w:muspick$"#
+	default-column-width { proportion 0.5; }
+	default-window-height { proportion 0.5; }
+}
+
+// MISC
+window-rule {
+	match app-id=r#"firefox$"#
+}
+
+window-rule {
+	match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+	open-floating true
+}

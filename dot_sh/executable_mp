@@ -1,0 +1,199 @@
+#!/bin/zsh
+
+source ~/.env/MPC_FORMAT
+source ~/.env/FZF_DEFAULT_OPTS
+source ~/.env/USR_MUSIC_DIR
+
+cmd=("$@")
+
+insert=0
+keep=0
+queue=0
+blocks=0
+desktop=0
+playlist=0
+
+playsleep="0.1"
+
+banner() {
+	echo
+	echo " █████████████   ████████"
+	echo "▒▒███▒▒███▒▒███ ▒▒███▒▒███"
+	echo " ▒███ ▒███ ▒███  ▒███ ▒███"
+	echo " ▒███ ▒███ ▒███  ▒███ ▒███"
+	echo " █████▒███ █████ ▒███████"
+	echo "▒▒▒▒▒ ▒▒▒ ▒▒▒▒▒  ▒███▒▒▒"
+	echo "                 ▒███" 
+	echo "                 █████"   
+	echo "                ▒▒▒▒▒"
+	echo
+}
+
+### parsing
+
+flg=()
+flgraw=()
+prs-flg() {
+	local arg=$1
+	case "$arg" in
+		"h" | "help") flg+=("HELP") ;;
+		"i" | "insert") flg+=("INSERT") ;;
+		"k" | "keep") flg+=("KEEP") ;;
+		"q" | "queue") flg+=("QUEUE") ;;
+		"b" | "blocks") flg+=("BLOCKS") ;;
+		"d" | "desktop") flg+=("DESKTOP") ;;
+		"p" | "playlist") flg+=("PLAYLIST") ;;
+		*) flg+=("unknown") ;;
+	esac
+}
+
+for i in {1..$#cmd}; do
+	if [[ ${cmd[$i]:0:1} == "-" ]]; then
+		if [[ ! ${cmd[$i]:1:1} == '-' ]]; then
+			for o in $(echo -n ${cmd[$i]:1} | grep -o .); do
+				flgraw+=("$o")
+				prs-flg "$o"
+			done
+		else
+			flgraw+=("${cmd[$i]:1}")
+			prs-flg "${cmd[$i]:2}"
+		fi
+		unset "cmd[$i]"
+	fi
+done
+
+cmd=("${cmd[@]}")
+
+if [ $#flg = 0 ]; then
+	flg=("none")
+fi
+
+if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo "[mp!] mp takes no arguments\n[mp/] aborting" && exit 1; fi
+
+for i in {1..$#flg}; do
+	case "${flg[$i]}" in
+		"none") ;;
+		"unknown")
+			echo "[mp!] unknown flag [ -${flgraw[$i]} ]"
+			echo "[mp/] aborting"
+			exit 1
+			;;
+		"HELP")
+			banner
+			echo "[.] usage: mp [-options]"
+			echo "[.] -i | --insert"
+			echo "[,]    inserts to queue instead of adding"
+			echo "[.] -k | --keep"
+			echo "[,]    keeps queue instead of clearing it"
+			echo "[.] -q | --queue"
+			echo "[,]    queues up songs instead of playing"
+			echo "[,]    them immediately"
+			echo "[.] -b | --blocks"
+			echo "[,]    renders using blocks instead of"
+			echo "[,]    kitty's icat functionality"
+			echo "[.] -d | --desktop"
+			echo "[,]    enables desktop shell mode"
+			echo "[.] -p | --playlist"
+			echo "[,]    selects playlists instead of songs"
+			echo "[.] -h | --help"
+			echo "[,]    prints this message"
+			echo
+			exit 0
+			;;
+		"INSERT") insert=1 ;;
+		"KEEP") keep=1 ;;
+		"QUEUE") queue=1 ;;
+		"BLOCKS") blocks=1 ;;
+		"DESKTOP") desktop=1 ;;
+		"PLAYLIST") playlist=1 ;;
+		*)
+			echo "[mp!] catastrophic error while parsing flags"
+			echo "[mp/] aborting"
+			exit 1
+			;;
+	esac
+done
+
+### main
+
+if ! [ $desktop = 1 ]; then
+	cls='--clear'
+else
+	cls='--no-clear'
+	if [[ $TERM = "xterm-kitty" ]]; then ~/.config/kitty/startup.sh; fi
+fi
+
+# playlist logic
+if [ $playlist = 1 ]; then
+	prevwin='top,50%'
+	binds='f1:select-all,f2:deselect-all,f3:toggle-all,f7:execute(mpc -q crop),f8:execute(mpc -q clear)'
+
+	mpl=$(mpc lsplaylists|fzf --gap --gap-line='─' --preview 'mpc playlist {}' --preview-window="$prevwin" "$cls" --bind "$binds")
+
+	if ! [[ "$mpl" == "" ]]; then
+		qs=$(mpc playlist|wc -l)
+		if ! [ $keep = 1 ]; then mpc -q clear; fi
+		for i in ${(f)mpl}; do mpc -q load "$i" > /dev/null; done
+		if ! [ $queue = 1 ]; then 
+			if [ $keep = 1 ]; then
+				mpc -q play $(( qs + 1 ))
+			else
+				sleep $playsleep
+				mpc -q play
+			fi
+		fi
+	fi
+
+	exit 0
+fi
+
+# non-playlist
+
+ffmpeg_grab='ffmpeg -loglevel quiet -i file:$USR_MUSIC_DIR/{1} -an -c:v copy -f image2pipe -'
+mpc_grab='mpc readpicture {1}'
+
+sp_chafa_img='chafa - -f symbols --stretch --size="$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES"'
+
+kp_chafa_img='chafa - -f kitty --stretch --size=$(( FZF_PREVIEW_COLUMNS < FZF_PREVIEW_LINES * 2 ? FZF_PREVIEW_COLUMNS : (FZF_PREVIEW_LINES * 3 > FZF_PREVIEW_COLUMNS ? FZF_PREVIEW_COLUMNS : FZF_PREVIEW_LINES * 2) ))x"$FZF_PREVIEW_LINES"'
+kp_txt_prefx='%$(( FZF_PREVIEW_LINES * 2 ))s \\033[0;90m▌'
+kp_txt_col0='\\033[0m'
+kp_txt_col1='\\033[1;32m'
+kp_txt_col2='\\033[1;31m'
+
+kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f %title% find filename {1})\" && { ${ffmpeg_grab} | ${kp_chafa_img} || ${mpc_grab} | ${kp_chafa_img} } && printf \"${kp_txt_prefx} ${kp_txt_col1}ARTIST:${kp_txt_col0} \$(mpc -f %artist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUMARTIST:${kp_txt_col0} \$(mpc -f %albumartist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUM:${kp_txt_col0} \$(mpc -f %album% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}YEAR:${kp_txt_col0} \$(mpc -f %date% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}TRACKNUM:${kp_txt_col0} #\$(mpc -f %track% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}DURATION:${kp_txt_col0} \$(mpc -f %time% find filename {1})\\\n${kp_txt_prefx} \\\n${kp_txt_prefx} ${kp_txt_col2}FILE:${kp_txt_col0} {1}\\\n${kp_txt_prefx} ${kp_txt_col2}MODIFIED:${kp_txt_col0} \$(mpc -f %mtime% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col2}FORMAT:${kp_txt_col0} \$(mpc -f %audioformat% find filename {1})\""
+
+symbolsprev="{ ${ffmpeg_grab} | ${sp_chafa_img} || ${mpc_grab} | ${sp_chafa_img} }"
+
+binds='f1:select-all,f2:deselect-all,f3:toggle-all,f4:execute(kitten icat --clear),f5:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f6:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f7:execute(mpc -q crop),f8:execute(mpc -q clear)'
+
+prevwin='top,50%'
+
+if ! [ $blocks = 1 ]; then
+	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$kittyprev" --preview-window="$prevwin" "$cls" --bind "$binds")
+else
+	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$symbolsprev" --preview-window="$prevwin" "$cls" --bind "$binds")
+fi
+
+if ! [[ "$mp" == "" ]]; then
+	qs=$(mpc playlist|wc -l)
+	if ! [ $keep = 1 ]; then mpc -q clear; fi
+	if ! [ $insert = 1 ]; then 
+		for i in ${(f)mp}; do mpc -q add "$i"; done
+	else 
+		for i in ${(f)mp}; do mpc -q insert "$i"; done
+	fi
+	if ! [ $queue = 1 ]; then 
+		if [ $keep = 1 ]; then
+			if [ $insert = 1 ]; then
+				mpc -q next
+			else
+				mpc -q play $(( qs + 1 ))
+			fi
+		else
+			sleep $playsleep
+			mpc -q play
+		fi
+	fi
+fi
+
+exit 0
