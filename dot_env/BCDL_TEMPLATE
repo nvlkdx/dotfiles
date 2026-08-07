@@ -1,1 +1,0 @@
-export BCDL_TEMPLATE='%{artist}/%{album}/%{track}-%{title}'
