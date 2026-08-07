@@ -1,0 +1,63 @@
+#!/bin/bash
+
+cmd=("$@")
+
+playsleep="0.1"
+
+# parsing
+if (( ${#cmd[@]} > 1 )); then echo '[mmpc!] too many arguments' && echo '[mmpc/] aborting' && exit 1; fi
+
+# main
+case "${cmd[0]}" in
+	"" | "help")
+		echo "[mmpc.] mmpc: macropad music player controls"
+		echo "[mmpc,] bind these controls to your macropad"
+		exit 0
+		;;
+	"load-tmp-pl") 
+		mpc -q clear 
+		mpc -q load .tmp
+		sleep $playsleep
+		mpc -q play
+		;;
+	"load-album")
+		mpc -q crop
+		mpc -f %file% find album "$(mpc current -f %album%)" | mpc -q add
+		mpc -q del 0
+		sleep $playsleep
+		mpc -q play
+		;;
+	"load-artist")
+		mpc -q crop
+		mpc -f %file% find artist "$(mpc current -f %artist%)" | mpc -q add
+		mpc -q del 0
+		sleep $playsleep
+		mpc -q play
+		;;
+	"load-all")
+		mpc -q clear
+		mpc -f %file% listall | mpc -q add
+		mpc -q shuffle
+		sleep $playsleep
+		mpc -q play
+		;;
+	"add-tmp-pl")
+		mpc -q addplaylist .tmp "$(mpc current -f %file%)"
+		;;
+	"mv-prev-tmp-pl")
+		mpc -q moveplaylist .tmp $(mpc current -f %position%) $(( $(mpc current -f %position%) - 1 ))
+		mpc -q mv $(mpc current -f %position%) $(( $(mpc current -f %position%) - 1 ))
+		;;
+	"mv-next-tmp-pl")
+		mpc -q moveplaylist .tmp $(mpc current -f %position%) $(( $(mpc current -f %position%) + 1 ))
+		mpc -q mv $(mpc current -f %position%) $(( $(mpc current -f %position%) + 1 ))
+		;;
+	"del-tmp-pl")
+		mpc -q delplaylist .tmp $(mpc current -f %position%)
+		mpc -q del 0
+		;;
+	*)
+		echo "[mmpc!] unknown command [ "${cmd[0]}" ]"
+		echo "[mmpc/] aborting"
+		exit 1
+esac

@@ -1,0 +1,26 @@
+animations {
+	window-close {
+		duration-ms 300
+		curve "linear"
+		
+		custom-shader r"
+            float rs_rand(vec2 co) {
+                return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+            }
+
+            vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+                float p = 1.0 - niri_clamped_progress;
+                vec2 uv = coords_geo.xy;
+                vec3 tc = niri_geo_to_tex * vec3(uv, 1.0);
+                vec4 win = texture2D(niri_tex, tc.st);
+
+                vec2 sz = vec2(10.0, 10.0);
+                float smoothness = 0.5;
+                float r = rs_rand(floor(sz * uv));
+                float reveal = smoothstep(0.0, -smoothness, r - (p * (1.0 + smoothness)));
+
+                return win * reveal;
+            }
+	    "
+	}
+}

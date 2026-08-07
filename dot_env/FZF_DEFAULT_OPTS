@@ -1,0 +1,1 @@
+export FZF_DEFAULT_OPTS='-m --smart-case -e --style full:sharp --color base16 --wrap --prompt ": "'

@@ -1,0 +1,1 @@
+export YTDL_FORMAT='%(track_number,playlist_index|single)s-%(track,title)S.%(ext)s'

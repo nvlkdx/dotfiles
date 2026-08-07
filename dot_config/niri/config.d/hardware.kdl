@@ -1,0 +1,38 @@
+/// BASE
+input {
+	keyboard {
+		numlock
+	}
+}
+
+output "DP-1" {
+	mode "2560x1440@200.000"
+	scale 1
+	transform "normal"
+	position x=0 y=0
+	focus-at-startup
+	hot-corners {
+		off
+	}
+
+	backdrop-color "#000000"
+}
+
+output "DP-4" {
+	scale 1
+	transform "normal"
+	position x=2560 y=-300
+	hot-corners {
+		off
+	}
+
+	layout {
+		empty-workspace-above-first
+		gaps 6
+		center-focused-column "always"
+		default-column-width { proportion 1.0; }
+		struts { left 0; right 0; top 0; bottom 0; }
+	}
+
+	backdrop-color "#000000"
+}
