@@ -1,0 +1,1 @@
+quiet splash amd_iommu=on plymouth.boot-log=/dev/null amdgpu.sg_display=0 amdgpu.dcdebugmask=0x10

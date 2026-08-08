@@ -9,43 +9,6 @@ import "../proc"
 
 Scope {
 	id: root
-	
-	property real panelWidthFrac: 4
-	property real panelHeight: 42
-	property real panelSlant: 36
-
-	property var loConf: {
-		"col": {
-			"br": Config.colors.border,
-			"bg": _hextorgba(Config.colors.background, Config.style.backgroundOpacity),
-			"fg": Config.colors.foreground,
-			"cr": Config.colors.cursor,
-
-			"c0": Config.colors.black,
-			"c1": Config.colors.red,
-			"c2": Config.colors.green,
-			"c3": Config.colors.yellow,
-			"c4": Config.colors.blue,
-			"c5": Config.colors.magenta,
-			"c6": Config.colors.cyan,
-			"c7": Config.colors.white,
-
-			"c8": Config.colors.gray,
-			"c9": Config.colors.brightRed,
-			"ca": Config.colors.brightGreen,
-			"cb": Config.colors.brightYellow,
-			"cc": Config.colors.brightBlue,
-			"cd": Config.colors.brightMagenta,
-			"ce": Config.colors.brightCyan,
-			"cf": Config.colors.brightWhite
-		},
-		"stl": {
-			"fnt": Config.style.font,
-			"brw": Config.style.borderWidth,
-			"anm": Config.style.animationMultiplier,
-			"smf": Config.style.sideMarginFrac
-		}
-	}		
 
 	function _hextorgba(hex, alpha) {
 		let cleanHex = hex.replace("#","");
@@ -60,14 +23,14 @@ Scope {
 
 	component EaseAnim: Behavior {
 		NumberAnimation {
-			duration: 250 * root.loConf.stl.anm
+			duration: 250 * Config.style.animationMultiplier
 			easing.type: Easing.OutCubic
 		}
 	}
 
 	component ColorAnim: Behavior {
 		ColorAnimation {
-			duration: 250 * root.loConf.stl.anm
+			duration: 250 * Config.style.animationMultiplier
 		}
 	}
 
@@ -77,23 +40,26 @@ Scope {
 		anchors.top: true
 		margins.top: -1
 
-		property int y: active ? 0 : -height-(loConf.stl.brw * 2)
+		property int y: active ? -borderWidth / 2 : -height - borderWidth
 		EaseAnim on y {}
 		onYChanged: midBarVisual.requestPaint()
-		property int x: ( width - visualWidth ) / 2
-		EaseAnim on x {}
-		onXChanged: midBarVisual.requestPaint()
-		
-		implicitWidth: screen.width
-		implicitHeight: root.panelHeight
-		property real slant: root.panelSlant
+		property int x: 0
 
-		property real visualWidth: screen.width / root.panelWidthFrac
+		property int xStart: (screen.width / 2) - (width / 2)
+		property int xEnd: (screen.width / 2) + (width / 2)
+		
+		implicitWidth: screen.width * Config.style.midSizePrc
+		implicitHeight: Config.style.panelHeightPx + borderWidth
+		property real slant: Config.style.panelSlantPx
+		onSlantChanged: midBarVisual.requestPaint()
+
+		property real visualWidth: width
+		onVisualWidthChanged: midBarVisual.requestPaint()
 		property real visualHeight: height
+		onVisualHeightChanged: midBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: root.loConf.stl.brw
-		EaseAnim on borderWidth {}
+		property real borderWidth: Config.style.borderWidth
 		onBorderWidthChanged: midBarVisual.requestPaint()
 
 		color: "transparent"
@@ -101,35 +67,21 @@ Scope {
 		Item {
 			id: midBarColors
 
-			property color fg: root.loConf.col.fg
+			property color fg: Config.colors.foreground
 			ColorAnim on fg {}
 			onFgChanged: midBarVisual.requestPaint()
 
-			property color bg: root.loConf.col.bg
+			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
 			ColorAnim on bg {}
 			onBgChanged: midBarVisual.requestPaint()
 
-			property color br: root.loConf.col.br
+			property color br: Config.colors.border
 			ColorAnim on br {}
 			onBrChanged: midBarVisual.requestPaint()
 		}
 
-		enum Status {
-			Hidden,
-			Visible,
-			Active
-		}
-
 		property bool active: false
-
-		Timer {
-			interval: 500
-			running: true 
-			repeat: true
-			onTriggered: {
-				midBar.active = true
-			}
-		}
+		property bool visible: true
 
 		Canvas {
 			id: midBarVisual
@@ -139,10 +91,11 @@ Scope {
 			onPaint: {
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(midBar.x + midBar.borderWidth, midBar.y);
-				ctx.lineTo(midBar.x + midBar.slant, midBar.y + midBar.height);
-				ctx.lineTo(midBar.x + midBar.visualWidth - midBar.slant, midBar.y + midBar.height);
-				ctx.lineTo(midBar.x + midBar.visualWidth - midBar.borderWidth, midBar.y);
+				ctx.moveTo(midBar.x, midBar.y);
+				ctx.lineTo(midBar.x + midBar.slant, midBar.y + midBar.visualHeight);
+				ctx.lineTo(midBar.x + midBar.visualWidth - midBar.slant, midBar.y + midBar.visualHeight);
+				ctx.lineTo(midBar.x + midBar.visualWidth, midBar.y);
+				ctx.closePath();
 		    
 				ctx.fillStyle = midBarColors.bg;
 				ctx.fill();
@@ -153,15 +106,24 @@ Scope {
 			}
 		}
 
+		Timer {
+			interval: 500
+			running: true 
+			repeat: true
+			onTriggered: {
+				midBar.active = true
+			}
+		}
+
 		Rectangle {
 			id: midBarTextSpace
 
 			x: midBar.x + midBar.slant
 			y: midBar.y
 
-			property int fontSize: midBar.visualHeight / 2
 			width: midBar.visualWidth - ( midBar.slant * 2 )
-			height: midBar.visualHeight
+			height: midBar.visualHeight - midBar.borderWidth
+			property int fontSize: height / 2
 
 			color: "transparent"
 
@@ -174,7 +136,7 @@ Scope {
 				verticalAlignment: Text.AlignVCenter
 
 				color: midBarColors.fg
-				font.family: root.loConf.stl.fnt
+				font.family: Config.style.font
 				font.pixelSize: parent.fontSize
 
 				elide: Text.ElideLeft
@@ -188,55 +150,48 @@ Scope {
 		id: leftBar
 
 		anchors.top: true
+		anchors.left: true
 		margins.top: -1
 
-		property int y: active ? 0 : -height-(loConf.stl.brw * 2)
+		property int y: active ? -borderWidth / 2 : -height - borderWidth
 		EaseAnim on y {}
 		onYChanged: leftBarVisual.requestPaint()
-		property int x: midBar.visualWidth / root.loConf.stl.smf 
-		EaseAnim on x {}
+		property int x: Math.min(Math.max(screen.width * Config.style.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.periphSizePrc)), midBar.xStart - (slant * 2))
 		onXChanged: leftBarVisual.requestPaint()
 		
-		implicitWidth: screen.width
-		implicitHeight: root.panelHeight
-		property real slant: root.panelSlant
+		implicitWidth: midBar.xStart
+		implicitHeight: Config.style.panelHeightPx
+		property real slant: Config.style.panelSlantPx
+		onSlantChanged: leftBarVisual.requestPaint()
 
-		property real visualWidth: midBar.x
-		EaseAnim on visualWidth {}
+		property real visualWidth: midBar.xStart - leftBar.x
 		onVisualWidthChanged: leftBarVisual.requestPaint()
 		property real visualHeight: height
-		EaseAnim on visualHeight {}
 		onVisualHeightChanged: leftBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: root.loConf.stl.brw
-		EaseAnim on borderWidth {}
+		property real borderWidth: Config.style.borderWidth
 		onBorderWidthChanged: leftBarVisual.requestPaint()
 
 		color: "transparent"
 		Item {
 			id: leftBarColors
 
-			property color fg: root.loConf.col.fg
+			property color fg: Config.colors.foreground
 			ColorAnim on fg {}
 			onFgChanged: leftBarVisual.requestPaint()
 
-			property color bg: root.loConf.col.bg
+			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
 			ColorAnim on bg {}
 			onBgChanged: leftBarVisual.requestPaint()
 
-			property color br: root.loConf.col.br
+			property color br: Config.colors.border
 			ColorAnim on br {}
 			onBrChanged: leftBarVisual.requestPaint()
 		}
 
-		enum Status {
-			Hidden,
-			Visible,
-			Active
-		}
-
 		property bool active: false
+		property bool visible: true
 
 		Timer {
 			interval: 1000
@@ -257,8 +212,9 @@ Scope {
 				ctx.reset();
 				ctx.moveTo(leftBar.x, leftBar.y);
 				ctx.lineTo(leftBar.x + leftBar.slant, leftBar.y + leftBar.visualHeight);
-				ctx.lineTo(leftBar.visualWidth, leftBar.y + leftBar.visualHeight);
-				ctx.lineTo(leftBar.visualWidth - leftBar.slant, leftBar.y);
+				ctx.lineTo(leftBar.x + leftBar.visualWidth, leftBar.y + leftBar.visualHeight);
+				ctx.lineTo(leftBar.x + leftBar.visualWidth - leftBar.slant, leftBar.y);
+				ctx.closePath();
 		    
 				ctx.fillStyle = leftBarColors.bg;
 				ctx.fill();
@@ -274,54 +230,47 @@ Scope {
 		id: rightBar
 
 		anchors.top: true
+		anchors.right: true
 		margins.top: -1
 
-		property int y: active ? 0 : -height-(loConf.stl.brw * 2)
+		property int y: active ? 0 : -height - borderWidth
 		EaseAnim on y {}
 		onYChanged: rightBarVisual.requestPaint()
-		property int x: midBar.x + midBar.visualWidth
-		EaseAnim on x {}
-		onXChanged: rightBarVisual.requestPaint()
+		property int x: 0
 		
-		implicitWidth: screen.width
-		implicitHeight: root.panelHeight
-		property real slant: root.panelSlant
-		property real visualWidth: width - ( midBar.x + midBar.visualWidth + ( midBar.visualWidth / root.loConf.stl.smf ) )
-		EaseAnim on visualWidth {}
+		implicitWidth: screen.width - midBar.xEnd
+		implicitHeight: Config.style.panelHeightPx
+		property real slant: Config.style.panelSlantPx
+		onSlantChanged: rightBarVisual.requestPaint()
+
+		property real visualWidth: Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc), slant * 2))
 		onVisualWidthChanged: rightBarVisual.requestPaint()
 		property real visualHeight: height
-		EaseAnim on visualHeight {}
 		onVisualHeightChanged: rightBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: root.loConf.stl.brw
-		EaseAnim on borderWidth {}
+		property real borderWidth: Config.style.borderWidth
 		onBorderWidthChanged: rightBarVisual.requestPaint()
 
 		color: "transparent"
 		Item {
 			id: rightBarColors
 
-			property color fg: root.loConf.col.fg
+			property color fg: Config.colors.foreground
 			ColorAnim on fg {}
 			onFgChanged: rightBarVisual.requestPaint()
 
-			property color bg: root.loConf.col.bg
+			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
 			ColorAnim on bg {}
 			onBgChanged: rightBarVisual.requestPaint()
 
-			property color br: root.loConf.col.br
+			property color br: Config.colors.border
 			ColorAnim on br {}
 			onBrChanged: rightBarVisual.requestPaint()
 		}
 
-		enum Status {
-			Hidden,
-			Visible,
-			Active
-		}
-
 		property bool active: false
+		property bool visible: true
 
 		Timer {
 			interval: 1000
@@ -344,6 +293,7 @@ Scope {
 				ctx.lineTo(rightBar.x, rightBar.y + rightBar.visualHeight);
 				ctx.lineTo(rightBar.x + rightBar.visualWidth - rightBar.slant, rightBar.y + rightBar.visualHeight);
 				ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
+				ctx.closePath();
 		    
 				ctx.fillStyle = leftBarColors.bg;
 				ctx.fill();

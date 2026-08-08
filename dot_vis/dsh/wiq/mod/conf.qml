@@ -81,6 +81,10 @@ Singleton {
 		"backgroundOpacity": config.dat.style?.backgroundOpacity ?? 1,
 		"animationCurve": config.dat.style?.animationCurve ?? "easing",
 		"animationMultiplier": config.dat.style?.animationMultiplier ?? 1,
-		"sideMarginFrac": config.dat.style?.sideMarginFrac ?? 1
+		"periphSizePrc": config.dat.style?.periphSizePrc ?? 0.5,
+		"midSizePrc": config.dat.style?.midSizePrc ?? 0.25,
+		"sideMarginPrc": config.dat.style?.sideMarginPrc ?? 0,
+		"panelHeightPx": config.dat.style?.panelHeightPx ?? 42,
+		"panelSlantPx": config.dat.style?.panelSlantPx ?? 36
 	}
 }
