@@ -1,0 +1,9 @@
+input {
+	keyboard {
+		numlock
+		xkb {
+			layout "us,ru,gr"
+			options "grp:win_space_toggle"
+		}
+	}
+}

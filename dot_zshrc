@@ -22,5 +22,4 @@ source $ZSH_CUSTOM/als.zsh
 source $ZSH_CUSTOM/env.zsh
 
 # greetings and salutations
-fastfetch -l arch --logo-padding-left "$(( ( $(tput cols) - 80 ) / 2 ))"
 echo && figlet -cf tmplr -w $COLUMNS "$(shuf -n 1 $ZSH_CUSTOM/zsh-greets)"

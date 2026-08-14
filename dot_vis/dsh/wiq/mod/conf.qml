@@ -50,6 +50,10 @@ Singleton {
 		try { config.dat = Object.assign({}, oldDat, newDat) } catch (e) {}
 	}
 
+	function _clamp(val, min, max) {
+		return Math.max(min, Math.min(max, val))
+	}
+
 	readonly property var colors: {
 		"black": config.dat.colors?.black ?? "black",
 		"red": config.dat.colors?.red ?? "red",
@@ -78,12 +82,11 @@ Singleton {
 	readonly property var style: {
 		"font": config.dat.style?.font ?? "terminus",
 		"borderWidth": config.dat.style?.borderWidth ?? 2,
-		"backgroundOpacity": config.dat.style?.backgroundOpacity ?? 1,
-		"animationCurve": config.dat.style?.animationCurve ?? "easing",
-		"animationMultiplier": config.dat.style?.animationMultiplier ?? 1,
-		"periphSizePrc": config.dat.style?.periphSizePrc ?? 0.5,
-		"midSizePrc": config.dat.style?.midSizePrc ?? 0.25,
-		"sideMarginPrc": config.dat.style?.sideMarginPrc ?? 0,
+		"backgroundOpacity": config._clamp(config.dat.style?.backgroundOpacity, 0, 1) ?? 1,
+		"animationSlowdown": Math.max(0, config.dat.style?.animationSlowdown) ?? 1,
+		"periphSizePrc": Math.max(0, config.dat.style?.periphSizePrc) ?? 0.5,
+		"midSizePrc": config._clamp(config.dat.style?.midSizePrc, 0, 1) ?? 0.25,
+		"sideMarginPrc": config._clamp(config.dat.style?.sideMarginPrc, 0, 1) ?? 0,
 		"panelHeightPx": config.dat.style?.panelHeightPx ?? 42,
 		"panelSlantPx": config.dat.style?.panelSlantPx ?? 36
 	}

@@ -3,7 +3,7 @@
 		"font": "MonaspiceKr NFM",
 		"borderWidth": 2,
 		"backgroundOpacity": 0.75,
-		"animationMultiplier": 2,
+		"animationSlowdown": 2,
 		"midSizePrc": 0.25,
 		"periphSizePrc": 0.5,
 		"sideMarginPrc": 0,

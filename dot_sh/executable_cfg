@@ -21,7 +21,8 @@ case "${cmd[0]}" in
 	"bash") $EDITOR ~/.bashrc ;;
 	"nb") $EDITOR ~/.config/nb/nb.conf ;;
 	"niri") $EDITOR ~/.config/niri/config.kdl ;;
-	"niri-hardware") $EDITOR ~/.config/niri/config.d/hardware.kdl ;;
+	"niri-monitors") $EDITOR ~/.config/niri/config.d/monitors.kdl ;;
+	"niri-input") $EDITOR ~/.config/niri/config.d/input.kdl ;;
 	"niri-layout") $EDITOR ~/.config/niri/config.d/layout.kdl ;;
 	"niri-cursor") $EDITOR ~/.config/niri/config.d/cursor.kdl ;;
 	"niri-startup") $EDITOR ~/.config/niri/config.d/startup.kdl ;;

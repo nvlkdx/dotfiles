@@ -6,7 +6,8 @@
 // ░██    ░██ ░██░██      ░██
 // ░██    ░██ ░██░██      ░██
 
-include "config.d/hardware.kdl"
+include "config.d/monitors.kdl"
+include "config.d/input.kdl"
 include "config.d/layout.kdl"
 include "config.d/startup.kdl"
 include "config.d/misc.kdl"

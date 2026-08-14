@@ -8,6 +8,9 @@ base, base-devel, linux, linux-hardened, linux-firmware, grub, sudo, nano, vim, 
 == [BASE] ==
 7zip, unzip, zram-generator, framework-system, lsof, gpm
 
+== [NERDSHIT] ==
+calc, singular, graphs, rink, gqrx, openspace@aur
+
 == [PACKAGING] ==
 flatpak, bubblewrap-suid, aurutils@aur
 
@@ -15,16 +18,16 @@ flatpak, bubblewrap-suid, aurutils@aur
 nvim, bat, clang, uv, python
 
 == [MEDIUM] ==
-yazi, mpd, mpc, rmpc, viu, imv, mpv, gimp, inkscape, wine
+yazi, mpd, mpc, rmpc, chafa, imv, mpv, gimp, inkscape, wine, zathura, zathura-pdf-mupdf
 
 == [CHAT] ==
-toxic, profanity, irssi
+toxic, profanity, weechat
 
 == [SECURITY] ==
-clamav, usbguard, firejail, physlock@aur, arch-audit
+clamav, usbguard, firejail, physlock@aur, arch-audit, tor, nyx, dnscrypt-proxy, nftables, nmap, john, hashcat, proton-vpn-gtk-app, metasploit, lynis, kismet, bettercap
 
 == [MISC] ==
-fzf, fd
+fzf, fd, piper
 
 -------------------
 --- [[DRIVERS]] ---
@@ -37,33 +40,36 @@ pipewire, pipewire-alsa, pipewire-pulse, pipewire-jack, wireplumber, sof-firmwar
 mesa, xf86-video-admgpu, vulkan-radeon, libva-mesa-driver
 
 == [INPUT] ==
-xf86-input-libinput, piper
+xf86-input-libinput
 
 ---------------------
 --- [[INTERFACE]] ---
 ---------------------
 
 == [WINDOWS] ==
-plymouth, niri, sway, kitty, rofi, sddm, quickshell, wl-clipboard, xdg-desktop-portal-wlr, xdg-desktop-portal-gtk, xdg-user-dirs, xdg-user-dirs-gtk, wlr-randr, xwayland-satellite
+plymouth, niri, kitty, alacritty, cool-retro-term, quickshell, wl-clipboard, xdg-desktop-portal-wlr, xdg-desktop-portal-gtk, xdg-user-dirs, xdg-user-dirs-gtk, wlr-randr, xwayland-satellite
 
 == [THEMING] ==
-matugen, pastel, nwg-look, awww, xorg-xcursorgen, gnome-themes-extra, wallust@aur, b00merang-blackout@git, future-cursors@git, framework_rgbafan@git
+gomplate@aur, pastel, nwg-look, qt6ct, awww, neowall, xorg-xcursorgen, gnome-themes-extra, wallust@aur, b00merang-blackout@git, future-cursors@git, framework_rgbafan@git
 
 == [FONTS] ==
 noto-fonts, noto-fonts-emoji, noto-fonts-cjk, ttf-firacode, ttf-firacode-nerd, ttf-fira-mono, otf-monaspace-nerd
 
 == [TERM] ==
-astroterm, btop, cava, rustnet, figlet, drift-bin@aur
+astroterm, btop, cava, rustnet, figlet, dust, drift-bin@aur
 
 ----------------
 --- [[MISC]] ---
 ----------------
 
 == [WEB] ==
-lynx, firefox, chromium, tor, nyx, dnscrypt-proxy, iptables, nmap, aria2
+lynx, firefox, chromium,  aria2
 
 == [VIRSH] ==
 virt-viewer, guestfs-tools, qemu-full, libvirt, dmidecode, edk2-ovmf, dnsmasq, swtpm
 
 == [MUZAK] ==
-yt-dlp@uv|pip, bandcamp-dl-git@uv|git, wiremix, fluidsynth, soundfont-fluid, ardour, orca-c-git@aur
+yt-dlp@uv|pip, bandcamp-dl-git@uv|git, wiremix, fluidsynth, soundfont-fluid, ardour, audacity, lilypond, musescore, metronome, kid3-qt, lrcsync@git
+
+== [OTHER] ==
+rofimoji, wtype, deskflow

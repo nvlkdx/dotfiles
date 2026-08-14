@@ -121,7 +121,7 @@
                         (
                             size: "34%",
                             borders: "LEFT | TOP | BOTTOM",
-                            border_symbols: Inherited(parent: Plain, bottom_left: "├"),
+                            border_symbols: Plain,
                             pane: Component("header_left")
                         ),
                         (
@@ -133,17 +133,22 @@
                         (
                             size: "33%",
                             borders: "RIGHT | TOP | BOTTOM",
-                            border_symbols: Inherited(parent: Plain, bottom_right: "┤"),
+                            border_symbols: Plain,
                             pane: Component("header_right")
                         ),
                     ]
                 )
             ),
+	    (
+	        pane: Pane(Lyrics),
+		borders: "NONE",
+		size: "1",
+	    ),
             (
                 pane: Pane(Tabs),
-                borders: "RIGHT | LEFT | BOTTOM",
+                borders: "ALL",
                 border_symbols: Plain,
-                size: "2",
+                size: "3",
             ),
             (
                 pane: Pane(TabContent),

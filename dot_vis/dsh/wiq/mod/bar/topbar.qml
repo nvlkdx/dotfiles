@@ -23,14 +23,14 @@ Scope {
 
 	component EaseAnim: Behavior {
 		NumberAnimation {
-			duration: 250 * Config.style.animationMultiplier
+			duration: 250 * Config.style.animationSlowdown
 			easing.type: Easing.OutCubic
 		}
 	}
 
 	component ColorAnim: Behavior {
 		ColorAnimation {
-			duration: 250 * Config.style.animationMultiplier
+			duration: 250 * Config.style.animationSlowdown
 		}
 	}
 
@@ -40,7 +40,7 @@ Scope {
 		anchors.top: true
 		margins.top: -1
 
-		property int y: active ? -borderWidth / 2 : -height - borderWidth
+		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
 		onYChanged: midBarVisual.requestPaint()
 		property int x: 0
@@ -48,18 +48,18 @@ Scope {
 		property int xStart: (screen.width / 2) - (width / 2)
 		property int xEnd: (screen.width / 2) + (width / 2)
 		
-		implicitWidth: screen.width * Config.style.midSizePrc
-		implicitHeight: Config.style.panelHeightPx + borderWidth
-		property real slant: Config.style.panelSlantPx
+		implicitWidth: (screen.width * Config.style.midSizePrc) + borderWidth
+		implicitHeight: Config.style.panelHeightPx
+		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
 		onSlantChanged: midBarVisual.requestPaint()
 
-		property real visualWidth: width
+		property real visualWidth: width - borderWidth
 		onVisualWidthChanged: midBarVisual.requestPaint()
 		property real visualHeight: height
 		onVisualHeightChanged: midBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Config.style.borderWidth
+		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
 		onBorderWidthChanged: midBarVisual.requestPaint()
 
 		color: "transparent"
@@ -67,21 +67,28 @@ Scope {
 		Item {
 			id: midBarColors
 
-			property color fg: Config.colors.foreground
-			ColorAnim on fg {}
-			onFgChanged: midBarVisual.requestPaint()
+			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			onBackgroundChanged: midBarVisual.requestPaint()
 
-			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
-			ColorAnim on bg {}
-			onBgChanged: midBarVisual.requestPaint()
+			property color border: Config.colors.border
+			onBorderChanged: midBarVisual.requestPaint()
 
-			property color br: Config.colors.border
-			ColorAnim on br {}
-			onBrChanged: midBarVisual.requestPaint()
+			property color baseForeground: Config.colors.foreground
+
+			property color unselectedForeground: Config.colors.green
+			property color unselectedBackground: Config.colors.blue
+
+			property color selectionForeground: Config.colors.green
+			property color selectionBackground: Config.colors.blue
 		}
 
 		property bool active: false
 		property bool visible: true
+
+		MouseArea {
+			id: mouseArea
+			anchors.fill: parent
+		}
 
 		Canvas {
 			id: midBarVisual
@@ -91,16 +98,16 @@ Scope {
 			onPaint: {
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(midBar.x, midBar.y);
-				ctx.lineTo(midBar.x + midBar.slant, midBar.y + midBar.visualHeight);
+				ctx.moveTo(midBar.x + midBar.borderWidth, midBar.y);
+				ctx.lineTo(midBar.x + midBar.borderWidth + midBar.slant, midBar.y + midBar.visualHeight);
 				ctx.lineTo(midBar.x + midBar.visualWidth - midBar.slant, midBar.y + midBar.visualHeight);
 				ctx.lineTo(midBar.x + midBar.visualWidth, midBar.y);
 				ctx.closePath();
 		    
-				ctx.fillStyle = midBarColors.bg;
+				ctx.fillStyle = midBarColors.background;
 				ctx.fill();
 		    
-				ctx.strokeStyle = midBarColors.br
+				ctx.strokeStyle = midBarColors.border
 				ctx.lineWidth = midBar.borderWidth
 				ctx.stroke();
 			}
@@ -118,11 +125,11 @@ Scope {
 		Rectangle {
 			id: midBarTextSpace
 
-			x: midBar.x + midBar.slant
+			x: midBar.x + ( midBar.borderWidth * 1.5 ) + ( midBar.slant )
 			y: midBar.y
 
-			width: midBar.visualWidth - ( midBar.slant * 2 )
-			height: midBar.visualHeight - midBar.borderWidth
+			width: midBar.visualWidth - ( midBar.slant * 2 ) - ( midBar.borderWidth * 2 )
+			height: midBar.visualHeight
 			property int fontSize: height / 2
 
 			color: "transparent"
@@ -135,7 +142,7 @@ Scope {
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 
-				color: midBarColors.fg
+				color: midBarColors.baseForeground
 				font.family: Config.style.font
 				font.pixelSize: parent.fontSize
 
@@ -153,15 +160,15 @@ Scope {
 		anchors.left: true
 		margins.top: -1
 
-		property int y: active ? -borderWidth / 2 : -height - borderWidth
+		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
 		onYChanged: leftBarVisual.requestPaint()
-		property int x: Math.min(Math.max(screen.width * Config.style.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.periphSizePrc)), midBar.xStart - (slant * 2))
+		property int x: Math.min(Math.max(screen.width * Config.style.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.periphSizePrc)), midBar.xStart)
 		onXChanged: leftBarVisual.requestPaint()
 		
-		implicitWidth: midBar.xStart
+		implicitWidth: midBar.xStart + borderWidth
 		implicitHeight: Config.style.panelHeightPx
-		property real slant: Config.style.panelSlantPx
+		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
 		onSlantChanged: leftBarVisual.requestPaint()
 
 		property real visualWidth: midBar.xStart - leftBar.x
@@ -170,7 +177,7 @@ Scope {
 		onVisualHeightChanged: leftBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Config.style.borderWidth
+		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
 		onBorderWidthChanged: leftBarVisual.requestPaint()
 
 		color: "transparent"
@@ -233,23 +240,23 @@ Scope {
 		anchors.right: true
 		margins.top: -1
 
-		property int y: active ? 0 : -height - borderWidth
+		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
 		onYChanged: rightBarVisual.requestPaint()
 		property int x: 0
 		
-		implicitWidth: screen.width - midBar.xEnd
+		implicitWidth: screen.width - midBar.xEnd + borderWidth
 		implicitHeight: Config.style.panelHeightPx
-		property real slant: Config.style.panelSlantPx
+		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
 		onSlantChanged: rightBarVisual.requestPaint()
 
-		property real visualWidth: Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc), slant * 2))
+		property real visualWidth: Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc)))
 		onVisualWidthChanged: rightBarVisual.requestPaint()
 		property real visualHeight: height
 		onVisualHeightChanged: rightBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Config.style.borderWidth
+		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
 		onBorderWidthChanged: rightBarVisual.requestPaint()
 
 		color: "transparent"
@@ -289,17 +296,17 @@ Scope {
 			onPaint: {
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(rightBar.x + rightBar.slant, rightBar.y);
-				ctx.lineTo(rightBar.x, rightBar.y + rightBar.visualHeight);
+				ctx.moveTo(rightBar.borderWidth + rightBar.x + rightBar.slant, rightBar.y);
+				ctx.lineTo(rightBar.borderWidth + rightBar.x, rightBar.y + rightBar.visualHeight);
 				ctx.lineTo(rightBar.x + rightBar.visualWidth - rightBar.slant, rightBar.y + rightBar.visualHeight);
 				ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
 				ctx.closePath();
 		    
-				ctx.fillStyle = leftBarColors.bg;
+				ctx.fillStyle = rightBarColors.bg;
 				ctx.fill();
 		    
-				ctx.strokeStyle = leftBarColors.br
-				ctx.lineWidth = leftBar.borderWidth
+				ctx.strokeStyle = rightBarColors.br
+				ctx.lineWidth = rightBar.borderWidth
 				ctx.stroke();
 			}
 		}
