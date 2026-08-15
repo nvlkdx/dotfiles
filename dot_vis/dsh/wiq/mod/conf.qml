@@ -1,5 +1,4 @@
 pragma Singleton
-pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -13,26 +12,26 @@ Singleton {
 	property var dat: ({})
 	property var inc: []
 
-	property var includeFile: FileView {
+	FileView {
 		path: config.configDir + "/include"
 		preload: true
 		watchChanges: true
 		onLoaded: config._include(text() || "")
 		onFileChanged: reload()
+		printErrors: false
 	}
 
 	Instantiator {
 		id: confInst
-		model: config.inc
+		model: !config.inc || config.inc.length === 0 ? ["config.json"] : config.inc
 
 		delegate: FileView {
-			required property var modelData
-
 			path: config.configDir + "/" + modelData
 			preload: true
 			watchChanges: true
 			onLoaded: config._parse(text() || "")
 			onFileChanged: reload()
+			printErrors: false
 		}
 	}
 
@@ -43,11 +42,7 @@ Singleton {
 
 	function _parse(raw) {
 		if (!raw) return
-
-		const oldDat = config.dat
-		const newDat = JSON.parse(raw)
-
-		try { config.dat = Object.assign({}, oldDat, newDat) } catch (e) {}
+		try { config.dat = Object.assign({}, config.dat, JSON.parse(raw)) } catch (e) {}
 	}
 
 	function _clamp(val, min, max) {
@@ -73,7 +68,7 @@ Singleton {
 		"brightCyan": config.dat.colors?.brightCyan ?? "cyan",
 		"brightWhite": config.dat.colors?.brightWhite ?? "white",
 
-		"background": config.dat.colors?.background ?? "black",
+		"background": config.dat.colors?.background ?? "#000000",
 		"foreground": config.dat.colors?.foreground ?? "white",
 		"cursor": config.dat.colors?.cursor ?? "white",
 		"border": config.dat.colors?.border ?? "white"

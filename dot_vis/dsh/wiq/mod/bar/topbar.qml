@@ -11,11 +11,11 @@ Scope {
 	id: root
 
 	function _hextorgba(hex, alpha) {
-		let cleanHex = hex.replace("#","");
+		const cleanHex = hex.replace("#","");
 
-		let r = parseInt(cleanHex.substring(0,2), 16);
-		let g = parseInt(cleanHex.substring(2,4), 16);
-		let b = parseInt(cleanHex.substring(4,6), 16);
+		const r = parseInt(cleanHex.substring(0,2), 16);
+		const g = parseInt(cleanHex.substring(2,4), 16);
+		const b = parseInt(cleanHex.substring(4,6), 16);
 
 		return Qt.rgba(r / 255, g / 255, b / 255, alpha)
 	}
@@ -59,7 +59,7 @@ Scope {
 		onVisualHeightChanged: midBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
 		onBorderWidthChanged: midBarVisual.requestPaint()
 
 		color: "transparent"
@@ -68,18 +68,16 @@ Scope {
 			id: midBarColors
 
 			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			ColorAnim on background {}
 			onBackgroundChanged: midBarVisual.requestPaint()
 
 			property color border: Config.colors.border
+			ColorAnim on border {}
 			onBorderChanged: midBarVisual.requestPaint()
 
 			property color baseForeground: Config.colors.foreground
-
-			property color unselectedForeground: Config.colors.green
-			property color unselectedBackground: Config.colors.blue
-
-			property color selectionForeground: Config.colors.green
-			property color selectionBackground: Config.colors.blue
+			ColorAnim on baseForeground {}
+			onBaseForegroundChanged: midBarVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -107,9 +105,11 @@ Scope {
 				ctx.fillStyle = midBarColors.background;
 				ctx.fill();
 		    
-				ctx.strokeStyle = midBarColors.border
-				ctx.lineWidth = midBar.borderWidth
-				ctx.stroke();
+				if (midBar.borderWidth > 0) {
+					ctx.strokeStyle = midBarColors.border
+					ctx.lineWidth = midBar.borderWidth
+					ctx.stroke();
+				}
 			}
 		}
 
@@ -177,7 +177,7 @@ Scope {
 		onVisualHeightChanged: leftBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
 		onBorderWidthChanged: leftBarVisual.requestPaint()
 
 		color: "transparent"
@@ -226,9 +226,11 @@ Scope {
 				ctx.fillStyle = leftBarColors.bg;
 				ctx.fill();
 		    
-				ctx.strokeStyle = leftBarColors.br
-				ctx.lineWidth = leftBar.borderWidth
-				ctx.stroke();
+				if (leftBar.borderWidth > 0) {
+					ctx.strokeStyle = leftBarColors.br
+					ctx.lineWidth = leftBar.borderWidth
+					ctx.stroke();
+				}
 			}
 		}
 	}
@@ -250,13 +252,13 @@ Scope {
 		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
 		onSlantChanged: rightBarVisual.requestPaint()
 
-		property real visualWidth: Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc)))
+		property real visualWidth: Math.max(0, Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc))))
 		onVisualWidthChanged: rightBarVisual.requestPaint()
 		property real visualHeight: height
 		onVisualHeightChanged: rightBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.min(visualHeight / 3, Config.style.borderWidth)
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
 		onBorderWidthChanged: rightBarVisual.requestPaint()
 
 		color: "transparent"
@@ -305,9 +307,11 @@ Scope {
 				ctx.fillStyle = rightBarColors.bg;
 				ctx.fill();
 		    
-				ctx.strokeStyle = rightBarColors.br
-				ctx.lineWidth = rightBar.borderWidth
-				ctx.stroke();
+				if (rightBar.borderWidth > 0) {
+					ctx.strokeStyle = rightBarColors.br
+					ctx.lineWidth = rightBar.borderWidth
+					ctx.stroke();
+				}
 			}
 		}
 	}
