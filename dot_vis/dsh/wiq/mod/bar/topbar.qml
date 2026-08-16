@@ -184,17 +184,17 @@ Scope {
 		Item {
 			id: leftBarColors
 
-			property color fg: Config.colors.foreground
-			ColorAnim on fg {}
-			onFgChanged: leftBarVisual.requestPaint()
+			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			ColorAnim on background {}
+			onBackgroundChanged: midBarVisual.requestPaint()
 
-			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
-			ColorAnim on bg {}
-			onBgChanged: leftBarVisual.requestPaint()
+			property color border: Config.colors.border
+			ColorAnim on border {}
+			onBorderChanged: midBarVisual.requestPaint()
 
-			property color br: Config.colors.border
-			ColorAnim on br {}
-			onBrChanged: leftBarVisual.requestPaint()
+			property color baseForeground: Config.colors.foreground
+			ColorAnim on baseForeground {}
+			onBaseForegroundChanged: midBarVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -223,11 +223,11 @@ Scope {
 				ctx.lineTo(leftBar.x + leftBar.visualWidth - leftBar.slant, leftBar.y);
 				ctx.closePath();
 		    
-				ctx.fillStyle = leftBarColors.bg;
+				ctx.fillStyle = leftBarColors.background;
 				ctx.fill();
 		    
 				if (leftBar.borderWidth > 0) {
-					ctx.strokeStyle = leftBarColors.br
+					ctx.strokeStyle = leftBarColors.border
 					ctx.lineWidth = leftBar.borderWidth
 					ctx.stroke();
 				}
@@ -265,17 +265,17 @@ Scope {
 		Item {
 			id: rightBarColors
 
-			property color fg: Config.colors.foreground
-			ColorAnim on fg {}
-			onFgChanged: rightBarVisual.requestPaint()
+			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			ColorAnim on background {}
+			onBackgroundChanged: midBarVisual.requestPaint()
 
-			property color bg: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
-			ColorAnim on bg {}
-			onBgChanged: rightBarVisual.requestPaint()
+			property color border: Config.colors.border
+			ColorAnim on border {}
+			onBorderChanged: midBarVisual.requestPaint()
 
-			property color br: Config.colors.border
-			ColorAnim on br {}
-			onBrChanged: rightBarVisual.requestPaint()
+			property color baseForeground: Config.colors.foreground
+			ColorAnim on baseForeground {}
+			onBaseForegroundChanged: midBarVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -304,11 +304,11 @@ Scope {
 				ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
 				ctx.closePath();
 		    
-				ctx.fillStyle = rightBarColors.bg;
+				ctx.fillStyle = rightBarColors.background;
 				ctx.fill();
 		    
 				if (rightBar.borderWidth > 0) {
-					ctx.strokeStyle = rightBarColors.br
+					ctx.strokeStyle = rightBarColors.border;
 					ctx.lineWidth = rightBar.borderWidth
 					ctx.stroke();
 				}
