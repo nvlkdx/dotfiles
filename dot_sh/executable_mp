@@ -152,17 +152,17 @@ fi
 ffmpeg_grab='ffmpeg -loglevel quiet -i file:$USR_MUSIC_DIR/{1} -an -c:v copy -f image2pipe -'
 mpc_grab='mpc readpicture {1}'
 
-sp_chafa_img='chafa - -f symbols --stretch --size="$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES"'
+sp_chafa_img='chafa - -f symbols --animate=off --stretch --size="$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES"'
 
-kp_chafa_img='chafa - -f kitty --stretch --size=$(( FZF_PREVIEW_COLUMNS < FZF_PREVIEW_LINES * 2 ? FZF_PREVIEW_COLUMNS : (FZF_PREVIEW_LINES * 3 > FZF_PREVIEW_COLUMNS ? FZF_PREVIEW_COLUMNS : FZF_PREVIEW_LINES * 2) ))x"$FZF_PREVIEW_LINES"'
+kp_chafa_img='chafa - -f kitty --animate=off --stretch --size=$(( FZF_PREVIEW_COLUMNS < FZF_PREVIEW_LINES * 2 ? FZF_PREVIEW_COLUMNS : (FZF_PREVIEW_LINES * 3 > FZF_PREVIEW_COLUMNS ? FZF_PREVIEW_COLUMNS : FZF_PREVIEW_LINES * 2) ))x"$FZF_PREVIEW_LINES"'
 kp_txt_prefx='%$(( FZF_PREVIEW_LINES * 2 ))s \\033[0;90m▌'
 kp_txt_col0='\\033[0m'
 kp_txt_col1='\\033[1;32m'
 kp_txt_col2='\\033[1;31m'
 
-kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f %title% find filename {1})\" && { ${ffmpeg_grab} | ${kp_chafa_img} || ${mpc_grab} | ${kp_chafa_img} } && printf \"${kp_txt_prefx} ${kp_txt_col1}ARTIST:${kp_txt_col0} \$(mpc -f %artist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUMARTIST:${kp_txt_col0} \$(mpc -f %albumartist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUM:${kp_txt_col0} \$(mpc -f %album% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}YEAR:${kp_txt_col0} \$(mpc -f %date% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}TRACKNUM:${kp_txt_col0} #\$(mpc -f %track% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}DURATION:${kp_txt_col0} \$(mpc -f %time% find filename {1})\\\n${kp_txt_prefx} \\\n${kp_txt_prefx} ${kp_txt_col2}FILE:${kp_txt_col0} {1}\\\n${kp_txt_prefx} ${kp_txt_col2}MODIFIED:${kp_txt_col0} \$(mpc -f %mtime% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col2}FORMAT:${kp_txt_col0} \$(mpc -f %audioformat% find filename {1})\""
+kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f %title% find filename {1})\" && { ${ffmpeg_grab} || ${mpc_grab} } | ${kp_chafa_img} 2>/dev/null || echo && printf \"${kp_txt_prefx} ${kp_txt_col1}ARTIST:${kp_txt_col0} \$(mpc -f %artist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUMARTIST:${kp_txt_col0} \$(mpc -f %albumartist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUM:${kp_txt_col0} \$(mpc -f %album% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}YEAR:${kp_txt_col0} \$(mpc -f %date% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}TRACKNUM:${kp_txt_col0} #\$(mpc -f %track% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}DURATION:${kp_txt_col0} \$(mpc -f %time% find filename {1})\\\n${kp_txt_prefx} \\\n${kp_txt_prefx} ${kp_txt_col2}FILE:${kp_txt_col0} {1}\\\n${kp_txt_prefx} ${kp_txt_col2}MODIFIED:${kp_txt_col0} \$(mpc -f %mtime% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col2}FORMAT:${kp_txt_col0} \$(mpc -f %audioformat% find filename {1})\""
 
-symbolsprev="{ ${ffmpeg_grab} | ${sp_chafa_img} || ${mpc_grab} | ${sp_chafa_img} }"
+symbolsprev="{ ${ffmpeg_grab} || ${mpc_grab} } | ${sp_chafa_img} 2>/dev/null || echo"
 
 binds='f1:select-all,f2:deselect-all,f3:toggle-all,f4:execute(kitten icat --clear),f5:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f6:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f7:execute(mpc -q crop),f8:execute(mpc -q clear)'
 

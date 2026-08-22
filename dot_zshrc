@@ -22,4 +22,4 @@ source $ZSH_CUSTOM/als.zsh
 source $ZSH_CUSTOM/env.zsh
 
 # greetings and salutations
-echo && figlet -cf tmplr -w $COLUMNS "$(shuf -n 1 $ZSH_CUSTOM/zsh-greets)"
+echo && figlet -cf "$(shuf -n 1 $ZSH_CUSTOM/zsh-greet-fonts)" -w "$COLUMNS" "$(shuf -n 1 $ZSH_CUSTOM/zsh-greets)"

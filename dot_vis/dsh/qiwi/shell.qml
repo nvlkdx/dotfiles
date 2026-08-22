@@ -2,7 +2,7 @@ import Quickshell
 import QtQuick
 import "mod"
 import "mod/bar"
-import "mod/lok"
+import "mod/lock"
 import "mod/run"
 import "mod/proc"
 

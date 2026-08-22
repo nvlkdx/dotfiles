@@ -7,7 +7,7 @@ Singleton {
 	id: config
 
 	readonly property string homeDir: Quickshell.env("HOME")
-	readonly property string configDir: Quickshell.env("WIQ_CONFIG") || (Quickshell.env("XDG_CONFIG_HOME") || (homeDir + "/.config")) + "/wiq"
+	readonly property string configDir: Quickshell.env("QIWI_CONFIG") || (Quickshell.env("XDG_CONFIG_HOME") || (homeDir + "/.config")) + "/qiwi"
 
 	property var dat: ({})
 	property var inc: []

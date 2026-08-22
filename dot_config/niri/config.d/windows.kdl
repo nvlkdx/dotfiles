@@ -66,8 +66,8 @@ include "shaders/dsh/close/crt.kdl"
 
 window-rule {
 	match app-id=r#"kitty$"# title=r#"^dsh:w:muspick$"#
-	default-column-width { proportion 0.5; }
-	default-window-height { proportion 0.5; }
+	default-column-width { proportion 0.55; }
+	default-window-height { proportion 0.45; }
 }
 
 // MISC

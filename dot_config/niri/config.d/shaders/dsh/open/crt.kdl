@@ -3,7 +3,7 @@ window-rule {
 
 	animations {
 		window-open {
-			duration-ms 360
+			duration-ms 500
 			curve "linear"
 
 			custom-shader r"

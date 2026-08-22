@@ -3,7 +3,7 @@ window-rule {
 
 	animations {
 	     window-close {
-		duration-ms 360
+		duration-ms 500
 		//curve "ease-out-quad"
 		curve "linear"
 

@@ -9,16 +9,16 @@ screenshot-path "~/MDL/wastes/scr/%Y-%m-%d-%H-%M-%S.png"
 blur {
 	on
 	passes 3
-	offset 1.5 
+	offset 2
 	noise 0.02
 	saturation 0.5
 }
 
 overview {
-	zoom 0.666
+	zoom 0.6
 	workspace-shadow {
 		off
-		softness 40
+		softness 0
 		spread 30
 		offset x=0 y=10
 	}
@@ -45,5 +45,11 @@ recent-windows {
 	previews {
 		max-height 480
 		max-scale 0.5
+	}
+}
+
+gestures {
+	hot-corners {
+		off
 	}
 }
