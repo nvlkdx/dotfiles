@@ -48,9 +48,9 @@ layout {
 	}
 
 	struts {
-		left 60
-		right 60
-		top 60
-		bottom 60
+		left 12
+		right 12
+		top 12
+		bottom 12
 	}
 }

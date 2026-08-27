@@ -1,9 +1,9 @@
 import Quickshell
 import QtQuick
 import "mod"
-import "mod/bar"
+import "mod/bars"
 import "mod/lock"
-import "mod/run"
+import "mod/drun"
 import "mod/proc"
 
 ShellRoot {

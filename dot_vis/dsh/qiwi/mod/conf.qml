@@ -50,39 +50,48 @@ Singleton {
 	}
 
 	readonly property var colors: {
-		"black": config.dat.colors?.black ?? "black",
-		"red": config.dat.colors?.red ?? "red",
-		"green": config.dat.colors?.green ?? "green",
-		"yellow": config.dat.colors?.yellow ?? "yellow",
-		"blue": config.dat.colors?.blue ?? "blue",
-		"magenta": config.dat.colors?.magenta ?? "magenta",
-		"cyan": config.dat.colors?.cyan ?? "cyan",
-		"white": config.dat.colors?.white ?? "white",
+		"Base16": {
+			"black": config.dat.Colors?.Base16?.black ?? "black",
+			"red": config.dat.Colors?.Base16?.red ?? "red",
+			"green": config.dat.Colors?.Base16?.green ?? "green",
+			"yellow": config.dat.Colors?.Base16?.yellow ?? "yellow",
+			"blue": config.dat.Colors?.Base16?.blue ?? "blue",
+			"magenta": config.dat.Colors?.Base16?.magenta ?? "magenta",
+			"cyan": config.dat.Colors?.Base16?.cyan ?? "cyan",
+			"white": config.dat.Colors?.Base16?.white ?? "white",
 
-		"gray": config.dat.colors?.gray ?? "gray",
-		"brightRed": config.dat.colors?.brightRed ?? "red",
-		"brightGreen": config.dat.colors?.brightGreen ?? "green",
-		"brightYellow": config.dat.colors?.brightYellow ?? "yellow",
-		"brightBlue": config.dat.colors?.brightBlue ?? "blue",
-		"brightMagenta": config.dat.colors?.brightMagenta ?? "magenta",
-		"brightCyan": config.dat.colors?.brightCyan ?? "cyan",
-		"brightWhite": config.dat.colors?.brightWhite ?? "white",
+			"gray": config.dat.Colors?.Base16?.gray ?? "gray",
+			"brightRed": config.dat.Colors?.Base16?.brightRed ?? "red",
+			"brightGreen": config.dat.Colors?.Base16?.brightGreen ?? "green",
+			"brightYellow": config.dat.Colors?.Base16?.brightYellow ?? "yellow",
+			"brightBlue": config.dat.Colors?.Base16?.brightBlue ?? "blue",
+			"brightMagenta": config.dat.Colors?.Base16?.brightMagenta ?? "magenta",
+			"brightCyan": config.dat.Colors?.Base16?.brightCyan ?? "cyan",
+			"brightWhite": config.dat.Colors?.Base16?.brightWhite ?? "white"
+		},
 
-		"background": config.dat.colors?.background ?? "#000000",
-		"foreground": config.dat.colors?.foreground ?? "white",
-		"cursor": config.dat.colors?.cursor ?? "white",
-		"border": config.dat.colors?.border ?? "white"
+		"Special": {
+			"background": config.dat.Colors?.Special?.background ?? "#000000",
+			"foreground": config.dat.Colors?.Special?.foreground ?? "white",
+			"cursor": config.dat.Colors?.Special?.cursor ?? "white",
+			"border": config.dat.Colors?.Special?.border ?? "white"
+		}
 	}
 
 	readonly property var style: {
-		"font": config.dat.style?.font ?? "terminus",
-		"borderWidth": config.dat.style?.borderWidth ?? 2,
-		"backgroundOpacity": config._clamp(config.dat.style?.backgroundOpacity, 0, 1) ?? 1,
-		"animationSlowdown": Math.max(0, config.dat.style?.animationSlowdown) ?? 1,
-		"periphSizePrc": Math.max(0, config.dat.style?.periphSizePrc) ?? 0.5,
-		"midSizePrc": config._clamp(config.dat.style?.midSizePrc, 0, 1) ?? 0.25,
-		"sideMarginPrc": config._clamp(config.dat.style?.sideMarginPrc, 0, 1) ?? 0,
-		"panelHeightPx": config.dat.style?.panelHeightPx ?? 42,
-		"panelSlantPx": config.dat.style?.panelSlantPx ?? 36
+		"Global": {
+			"fontFamily": config.dat.Style?.Global?.fontFamily ?? "terminus",
+			"backgroundOpacity": config._clamp(config.dat.Style?.Global?.backgroundOpacity, 0, 1) ?? 1
+		},
+
+		"TopBar": {
+			"borderWidth": config.dat.Style?.Global?.borderWidth ?? 2,
+			"animationSlowdown": Math.max(0, config.dat.Style?.TopBar?.animationSlowdown) ?? 1,
+			"periphSizePrc": Math.max(0, config.dat.Style?.TopBar?.periphSizePrc) ?? 0.5,
+			"midSizePrc": config._clamp(config.dat.Style?.TopBar?.midSizePrc, 0, 1) ?? 0.25,
+			"sideMarginPrc": config._clamp(config.dat.Style?.TopBar?.sideMarginPrc, 0, 1) ?? 0,
+			"panelHeightPx": config.dat.Style?.TopBar?.panelHeightPx ?? 42,
+			"panelSlantPx": config.dat.Style?.TopBar?.panelSlantPx ?? 36
+		}
 	}
 }

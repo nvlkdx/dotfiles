@@ -1,13 +1,32 @@
 {
-	"style": {
-		"font": "MonaspiceKr NFM",
-		"borderWidth": 2,
-		"backgroundOpacity": 0.75,
-		"animationSlowdown": 2,
-		"midSizePrc": 0.25,
-		"periphSizePrc": 0.5,
-		"sideMarginPrc": 0,
-		"panelHeightPx": 42,
-		"panelSlantPx": 36
+	"Style": {
+		"Global": {
+			"fontFamily": "MonaspiceKr NFM",
+			"backgroundOpacity": 0.75
+		},
+
+		"TopBar": {
+			"borderWidth": 2,
+			"animationSlowdown": 2,
+			"midSizePrc": 0.25,
+			"periphSizePrc": 0.5,
+			"sideMarginPrc": 0,
+			"panelHeightPx": 42,
+			"panelSlantPx": 36
+		},
+
+		"SideBar": {
+			"borderWidth": 2,
+			"animationSlowdown": 1,
+			"sizePrc": 1,
+			"sideMarginPrc": 0,
+			"panelWidthPx": 42,
+			"panelSlantPx": 36
+		},
+
+		"BottomBar": {
+			"borderWidth": 2,
+			"animationSlowdown": 1
+		}
 	}
 }
