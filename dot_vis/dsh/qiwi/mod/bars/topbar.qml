@@ -1,9 +1,5 @@
 import Quickshell
-import Quickshell.Wayland
-import Quickshell.Io
 import QtQuick
-import QtQuick.Shapes
-import QtQuick.Controls
 import ".."
 import "../proc"
 
@@ -23,14 +19,14 @@ Scope {
 
 	component EaseAnim: Behavior {
 		NumberAnimation {
-			duration: 250 * Config.style.animationSlowdown
+			duration: 250 * Config.style.TopBar.animationSlowdown
 			easing.type: Easing.OutCubic
 		}
 	}
 
 	component ColorAnim: Behavior {
 		ColorAnimation {
-			duration: 250 * Config.style.animationSlowdown
+			duration: 250 * Config.style.TopBar.animationSlowdown
 		}
 	}
 
@@ -48,9 +44,9 @@ Scope {
 		property int xStart: (screen.width / 2) - (width / 2)
 		property int xEnd: (screen.width / 2) + (width / 2)
 		
-		implicitWidth: (screen.width * Config.style.midSizePrc) + borderWidth
-		implicitHeight: Config.style.panelHeightPx
-		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
+		implicitWidth: (screen.width * Config.style.TopBar.midSizePrc) + borderWidth
+		implicitHeight: Config.style.TopBar.panelHeightPx
+		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
 		onSlantChanged: midBarVisual.requestPaint()
 
 		property real visualWidth: width - borderWidth
@@ -59,7 +55,7 @@ Scope {
 		onVisualHeightChanged: midBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: midBarVisual.requestPaint()
 
 		color: "transparent"
@@ -67,26 +63,21 @@ Scope {
 		Item {
 			id: midBarColors
 
-			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
 			onBackgroundChanged: midBarVisual.requestPaint()
 
-			property color border: Config.colors.border
+			property color border: Config.colors.Special.border
 			ColorAnim on border {}
 			onBorderChanged: midBarVisual.requestPaint()
 
-			property color baseForeground: Config.colors.foreground
+			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
 			onBaseForegroundChanged: midBarVisual.requestPaint()
 		}
 
 		property bool active: false
 		property bool visible: true
-
-		MouseArea {
-			id: mouseArea
-			anchors.fill: parent
-		}
 
 		Canvas {
 			id: midBarVisual
@@ -96,19 +87,22 @@ Scope {
 			onPaint: {
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(midBar.x + midBar.borderWidth, midBar.y);
-				ctx.lineTo(midBar.x + midBar.borderWidth + midBar.slant, midBar.y + midBar.visualHeight);
-				ctx.lineTo(midBar.x + midBar.visualWidth - midBar.slant, midBar.y + midBar.visualHeight);
-				ctx.lineTo(midBar.x + midBar.visualWidth, midBar.y);
-				ctx.closePath();
-		    
-				ctx.fillStyle = midBarColors.background;
-				ctx.fill();
-		    
-				if (midBar.borderWidth > 0) {
-					ctx.strokeStyle = midBarColors.border
-					ctx.lineWidth = midBar.borderWidth
-					ctx.stroke();
+
+				if (midBar.visible) {
+					ctx.moveTo(midBar.x + midBar.borderWidth, midBar.y);
+					ctx.lineTo(midBar.x + midBar.borderWidth + midBar.slant, midBar.y + midBar.visualHeight);
+					ctx.lineTo(midBar.x + midBar.visualWidth - midBar.slant, midBar.y + midBar.visualHeight);
+					ctx.lineTo(midBar.x + midBar.visualWidth, midBar.y);
+					ctx.closePath();
+			    
+					ctx.fillStyle = midBarColors.background;
+					ctx.fill();
+			    
+					if (midBar.borderWidth > 0) {
+						ctx.strokeStyle = midBarColors.border
+						ctx.lineWidth = midBar.borderWidth
+						ctx.stroke();
+					}
 				}
 			}
 		}
@@ -143,7 +137,7 @@ Scope {
 				verticalAlignment: Text.AlignVCenter
 
 				color: midBarColors.baseForeground
-				font.family: Config.style.font
+				font.family: Config.style.Global.fontFamily
 				font.pixelSize: parent.fontSize
 
 				elide: Text.ElideLeft
@@ -156,19 +150,22 @@ Scope {
 	PanelWindow {
 		id: leftBar
 
-		anchors.top: true
-		anchors.left: true
+		anchors {
+			top: true
+			left: true
+		}
+
 		margins.top: -1
 
 		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
 		onYChanged: leftBarVisual.requestPaint()
-		property int x: Math.min(Math.max(screen.width * Config.style.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.periphSizePrc)), midBar.xStart)
+		property int x: Math.min(Math.max(screen.width * Config.style.TopBar.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.TopBar.periphSizePrc)), midBar.xStart)
 		onXChanged: leftBarVisual.requestPaint()
 		
 		implicitWidth: midBar.xStart + borderWidth
-		implicitHeight: Config.style.panelHeightPx
-		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
+		implicitHeight: Config.style.TopBar.panelHeightPx
+		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
 		onSlantChanged: leftBarVisual.requestPaint()
 
 		property real visualWidth: midBar.xStart - leftBar.x
@@ -177,24 +174,24 @@ Scope {
 		onVisualHeightChanged: leftBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: leftBarVisual.requestPaint()
 
 		color: "transparent"
 		Item {
 			id: leftBarColors
 
-			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
-			onBackgroundChanged: midBarVisual.requestPaint()
+			onBackgroundChanged: leftBarVisual.requestPaint()
 
-			property color border: Config.colors.border
+			property color border: Config.colors.Special.border
 			ColorAnim on border {}
-			onBorderChanged: midBarVisual.requestPaint()
+			onBorderChanged: leftBarVisual.requestPaint()
 
-			property color baseForeground: Config.colors.foreground
+			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
-			onBaseForegroundChanged: midBarVisual.requestPaint()
+			onBaseForegroundChanged: leftBarVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -217,19 +214,22 @@ Scope {
 			onPaint: {
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(leftBar.x, leftBar.y);
-				ctx.lineTo(leftBar.x + leftBar.slant, leftBar.y + leftBar.visualHeight);
-				ctx.lineTo(leftBar.x + leftBar.visualWidth, leftBar.y + leftBar.visualHeight);
-				ctx.lineTo(leftBar.x + leftBar.visualWidth - leftBar.slant, leftBar.y);
-				ctx.closePath();
-		    
-				ctx.fillStyle = leftBarColors.background;
-				ctx.fill();
-		    
-				if (leftBar.borderWidth > 0) {
-					ctx.strokeStyle = leftBarColors.border
-					ctx.lineWidth = leftBar.borderWidth
-					ctx.stroke();
+
+				if (leftBar.visible) {
+					ctx.moveTo(leftBar.x, leftBar.y);
+					ctx.lineTo(leftBar.x + leftBar.slant, leftBar.y + leftBar.visualHeight);
+					ctx.lineTo(leftBar.x + leftBar.visualWidth, leftBar.y + leftBar.visualHeight);
+					ctx.lineTo(leftBar.x + leftBar.visualWidth - leftBar.slant, leftBar.y);
+					ctx.closePath();
+			    
+					ctx.fillStyle = leftBarColors.background;
+					ctx.fill();
+			    
+					if (leftBar.borderWidth > 0) {
+						ctx.strokeStyle = leftBarColors.border
+						ctx.lineWidth = leftBar.borderWidth
+						ctx.stroke();
+					}
 				}
 			}
 		}
@@ -238,8 +238,11 @@ Scope {
 	PanelWindow {
 		id: rightBar
 
-		anchors.top: true
-		anchors.right: true
+		anchors {
+			top: true
+			right: true
+		}
+
 		margins.top: -1
 
 		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
@@ -248,34 +251,34 @@ Scope {
 		property int x: 0
 		
 		implicitWidth: screen.width - midBar.xEnd + borderWidth
-		implicitHeight: Config.style.panelHeightPx
-		property real slant: Math.min(visualWidth / 3, Config.style.panelSlantPx)
+		implicitHeight: Config.style.TopBar.panelHeightPx
+		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
 		onSlantChanged: rightBarVisual.requestPaint()
 
-		property real visualWidth: Math.max(0, Math.min(midBar.visualWidth * Config.style.periphSizePrc, Math.max(width - (screen.width * Config.style.sideMarginPrc))))
+		property real visualWidth: Math.max(0, Math.min(midBar.visualWidth * Config.style.TopBar.periphSizePrc, Math.max(width - (screen.width * Config.style.TopBar.sideMarginPrc))))
 		onVisualWidthChanged: rightBarVisual.requestPaint()
 		property real visualHeight: height
 		onVisualHeightChanged: rightBarVisual.requestPaint()
 
 		exclusiveZone: ExclusionMode.Ignore
-		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.borderWidth))
+		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: rightBarVisual.requestPaint()
 
 		color: "transparent"
 		Item {
 			id: rightBarColors
 
-			property color background: root._hextorgba(Config.colors.background, Config.style.backgroundOpacity)
+			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
-			onBackgroundChanged: midBarVisual.requestPaint()
+			onBackgroundChanged: rightBarVisual.requestPaint()
 
-			property color border: Config.colors.border
+			property color border: Config.colors.Special.border
 			ColorAnim on border {}
-			onBorderChanged: midBarVisual.requestPaint()
+			onBorderChanged: rightBarVisual.requestPaint()
 
-			property color baseForeground: Config.colors.foreground
+			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
-			onBaseForegroundChanged: midBarVisual.requestPaint()
+			onBaseForegroundChanged: rightBarVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -295,22 +298,25 @@ Scope {
 
 			anchors.fill: parent
 
-			onPaint: {
+			onPaint: {					
 				var ctx = getContext("2d");
 				ctx.reset();
-				ctx.moveTo(rightBar.borderWidth + rightBar.x + rightBar.slant, rightBar.y);
-				ctx.lineTo(rightBar.borderWidth + rightBar.x, rightBar.y + rightBar.visualHeight);
-				ctx.lineTo(rightBar.x + rightBar.visualWidth - rightBar.slant, rightBar.y + rightBar.visualHeight);
-				ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
-				ctx.closePath();
-		    
-				ctx.fillStyle = rightBarColors.background;
-				ctx.fill();
-		    
-				if (rightBar.borderWidth > 0) {
-					ctx.strokeStyle = rightBarColors.border;
-					ctx.lineWidth = rightBar.borderWidth
-					ctx.stroke();
+
+				if (rightBar.visible) {
+					ctx.moveTo(rightBar.borderWidth + rightBar.x + rightBar.slant, rightBar.y);
+					ctx.lineTo(rightBar.borderWidth + rightBar.x, rightBar.y + rightBar.visualHeight);
+					ctx.lineTo(rightBar.x + rightBar.visualWidth - rightBar.slant, rightBar.y + rightBar.visualHeight);
+					ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
+					ctx.closePath();
+			    
+					ctx.fillStyle = rightBarColors.background;
+					ctx.fill();
+			    
+					if (rightBar.borderWidth > 0) {
+						ctx.strokeStyle = rightBarColors.border;
+						ctx.lineWidth = rightBar.borderWidth
+						ctx.stroke();
+					}
 				}
 			}
 		}
