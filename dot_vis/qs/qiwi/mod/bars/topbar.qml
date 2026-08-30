@@ -3,8 +3,15 @@ import QtQuick
 import ".."
 import "../proc"
 
-Scope {
+PanelWindow {
 	id: root
+
+	anchors.top: true
+
+	color: "transparent"
+	implicitHeight: 40
+	exclusionMode: ExclusionMode.Normal
+	exclusiveZone: Math.max(midBar.height + midBar.y, leftBar.height + leftBar.y, rightBar.height + rightBar.y)
 
 	function _hextorgba(hex, alpha) {
 		const cleanHex = hex.replace("#","");
@@ -54,7 +61,7 @@ Scope {
 		property real visualHeight: height
 		onVisualHeightChanged: midBarVisual.requestPaint()
 
-		exclusiveZone: ExclusionMode.Ignore
+		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: midBarVisual.requestPaint()
 
@@ -173,7 +180,7 @@ Scope {
 		property real visualHeight: height
 		onVisualHeightChanged: leftBarVisual.requestPaint()
 
-		exclusiveZone: ExclusionMode.Ignore
+		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: leftBarVisual.requestPaint()
 
@@ -260,7 +267,7 @@ Scope {
 		property real visualHeight: height
 		onVisualHeightChanged: rightBarVisual.requestPaint()
 
-		exclusiveZone: ExclusionMode.Ignore
+		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
 		onBorderWidthChanged: rightBarVisual.requestPaint()
 
