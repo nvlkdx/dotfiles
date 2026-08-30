@@ -22,14 +22,14 @@ case "${cmd[0]}" in
 		;;
 	"load-album")
 		mpc -q crop
-		mpc -f %file% find album "$(mpc current -f %album%)" | mpc -q add
+		mpc -f %file% find album "$(mpc current -f %album%)" albumartist "$(mpc current -f %albumartist%)" | mpc -q add
 		mpc -q del 0
 		sleep $playsleep
 		mpc -q play
 		;;
 	"load-artist")
 		mpc -q crop
-		mpc -f %file% find artist "$(mpc current -f %artist%)" | mpc -q add
+		mpc -f %file% find albumartist "$(mpc current -f %albumartist%)" | mpc -q add
 		mpc -q del 0
 		sleep $playsleep
 		mpc -q play

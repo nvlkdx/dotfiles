@@ -1,1 +1,2 @@
-export MPC_FORMAT='%title% \[ %albumartist% :: %album% :: ##%track% \]'
+export MPC_FORMAT='[%title%[ \[ [%albumartist%|%artist%][ :: %album%][ :: [%disc%-]%track%] \]]]|[%file%]'
+

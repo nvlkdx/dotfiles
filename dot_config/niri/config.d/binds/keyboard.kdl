@@ -151,6 +151,11 @@ binds {
 	Mod+Ctrl+P		{ spawn-sh "~/.sh/dsh muspick -dkqp"; }
 	Mod+Shift+P		{ spawn-sh "~/.sh/dsh muspick -dp"; }
 
+	Mod+X			{ spawn-sh "~/.sh/dsh mixer"; }
+	Mod+Shift+X		{ spawn-sh "~/.sh/dsh mixer -v output"; }
+	
+	Mod+N			{ spawn-sh "~/.sh/dsh network"; }
+
 	/// MISC \\\
 	Print			{ screenshot; }
 	Ctrl+Print		{ screenshot-screen; }

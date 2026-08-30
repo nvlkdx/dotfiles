@@ -5,7 +5,6 @@ layer-rule {
 }
 
 layer-rule {
-	match namespace="quickshell"
 	background-effect {
 		xray true
 		ignore-opacity true
@@ -49,7 +48,7 @@ window-rule {
 
 // DESKTOP SHELL
 window-rule {
-	match title=r#"^dsh:w:"#
+	match app-id=r#"^dsh::"#
 	open-floating true
 	open-focused true
 	
@@ -65,9 +64,21 @@ include "shaders/dsh/open/crt.kdl"
 include "shaders/dsh/close/crt.kdl"
 
 window-rule {
-	match app-id=r#"kitty$"# title=r#"^dsh:w:muspick$"#
+	match app-id=r#"^dsh::muspick$"#
 	default-column-width { proportion 0.55; }
 	default-window-height { proportion 0.45; }
+}
+
+window-rule {
+	match app-id=r#"^dsh::mixer$"# 
+	default-column-width { proportion 0.5; }
+	default-window-height { proportion 0.25; }
+}
+
+window-rule {
+	match app-id=r#"^dsh::network$"#
+	default-column-width { proportion 0.5; }
+	default-window-height { proportion 0.75; }
 }
 
 // MISC

@@ -1,5 +1,5 @@
 window-rule {
-	match title=r#"^dsh:w:"#
+	match app-id=r#"^dsh::"#
 
 	animations {
 		window-close {
