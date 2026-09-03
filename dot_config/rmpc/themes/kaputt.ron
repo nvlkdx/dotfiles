@@ -21,7 +21,7 @@
         dir: "󱍙",
         playlist: "󰲸",
         marker: "╳",
-        ellipsis: "...",
+        ellipsis: "…",
         song_style: None,
         dir_style: None,
         playlist_style: None,
@@ -81,23 +81,46 @@
     ],
     song_table_format: [
         (
-            prop: (kind: Property(Title), style: (fg: "white"),
-                default: (kind: Text("NUL"), style: (fg: "default"))
+            prop: (kind: Property(Position), style: (fg: "white"),
+                default: (kind: Property(Other("albumartist")), style: (fg: "default"))
             ),
+            label_prop: (kind: Text("POS"), style: (fg: "white", modifiers: "Bold")),
+            width: "6",
+        ),
+        (
+            prop: (
+                kind: Group([
+                    (kind: Property(Disc)),
+                    (kind: Text("-")),
+                    (kind: Property(Track)),
+                ]),
+	        style: (fg: "yellow"),
+                default: (kind: Property(Track), style: (fg: "yellow"), default: (kind: Text("00"), style: (fg: "yellow")))
+            ),
+            label_prop: (kind: Text("NO"), style: (fg: "yellow", modifiers: "Bold")),
+            width: "4",
+        ),
+        (
+            prop: (kind: Property(Title), style: (fg: "white"),
+                default: (kind: Property(Filename), style: (fg: "default")),
+            ),
+	    scroll_speed: 1,
             label_prop: (kind: Text("TITLE"), style: (fg: "white", modifiers: "Bold")),
-            width: "35%",
+            width: "40%",
         ),
         (
             prop: (kind: Property(Artist), style: (fg: "yellow"),
-                default: (kind: Text("NUL"), style: (fg: "default"))
+                default: (kind: Property(Other("albumartist")), style: (fg: "default"))
             ),
+	    scroll_speed: 1,
             label_prop: (kind: Text("ARTIST"), style: (fg: "yellow", modifiers: "Bold")),
-            width: "20%",
+            width: "30%",
         ),
         (
             prop: (kind: Property(Album), style: (fg: "white"),
                 default: (kind: Text("NUL"), style: (fg: "default"))
             ),
+	    scroll_speed: 1,
             label_prop: (kind: Text("ALBUM"), style: (fg: "white", modifiers: "Bold")),
             width: "30%",
         ),
@@ -106,13 +129,78 @@
                 default: (kind: Text("NUL"), style: (fg: "default"))
             ),
             label_prop: (kind: Text("LEN"), style: (fg: "yellow", modifiers: "Bold")),
-            width: "15%",
+            width: "8",
             alignment: Right,
         ),
     ],
     layout: Split(
         direction: Vertical,
         panes: [
+            (
+                size: "5",
+                pane: Split(
+                    direction: Vertical,
+                    panes: [
+			(
+                            size: "2",
+			    borders: "TOP | LEFT | RIGHT",
+			    pane: Split(
+			        direction: Horizontal,
+				panes: [
+				    (
+				        size: "12",
+                                        borders: "NONE",
+                                        pane: Component("input_mode"),
+				    ),
+				    (
+				        size: "40%",
+					borders: "NONE",
+					pane: Component("queue_info"),
+				    ),
+				    (
+					size: "60%",
+					borders: "NONE",
+					pane: Component("queue_eof")
+				    ),
+				],
+			    ),
+                        ),
+			(
+			   size: "1",
+			   borders: "LEFT | RIGHT",
+                           pane: Pane(Property(content: [(kind: Property(Status(InputBuffer())), style: (fg: "blue"))], align: Center))
+			),
+                        (
+                            size: "2",
+                            borders: "BOTTOM | LEFT | RIGHT",
+                            border_symbols: Plain,
+			    border_title_alignment: Right,
+                            pane: Component("progress_bar"),
+                        ),
+
+                    ]
+                ),
+            ),
+
+
+            (
+                pane: Pane(TabContent),
+                size: "100%",
+            ),
+
+            (
+                pane: Pane(Tabs),
+                borders: "ALL",
+                border_symbols: Plain,
+                size: "3",
+            ),
+
+	    (
+	        pane: Pane(Lyrics),
+		borders: "NONE",
+		size: "1",
+	    ),
+
             (
                 size: "4",
                 pane: Split(
@@ -139,60 +227,7 @@
                     ]
                 )
             ),
-	    (
-	        pane: Pane(Lyrics),
-		borders: "NONE",
-		size: "1",
-	    ),
-            (
-                pane: Pane(Tabs),
-                borders: "ALL",
-                border_symbols: Plain,
-                size: "3",
-            ),
-            (
-                pane: Pane(TabContent),
-                size: "100%",
-            ),
-            (
-                size: "5",
-                pane: Split(
-                    direction: Vertical,
-                    panes: [
-                        (
-                            size: "3",
-                            borders: "TOP | LEFT | RIGHT",
-                            border_symbols: Inherited(parent: Plain, bottom_left: "├", bottom_right: "┤"),
-                            border_title_alignment: Right,
-                            pane: Component("progress_bar"),
-                        ),
-			(
-                            size: "2",
-			    borders: "BOTTOM | LEFT | RIGHT",
-			    pane: Split(
-			        direction: Horizontal,
-				panes: [
-				    (
-				        size: "12",
-                                        borders: "NONE",
-                                        pane: Component("input_mode"),
-				    ),
-				    (
-				        size: "40%",
-					borders: "NONE",
-					pane: Component("queue_info"),
-				    ),
-				    (
-					size: "60%",
-					borders: "NONE",
-					pane: Component("queue_eof")
-				    ),
-				],
-			    ),
-                        ),
-                    ]
-                ),
-            ),
+
         ],
     ),
     components: {
@@ -257,12 +292,8 @@
             direction: Horizontal,
             panes: [
                 (
-                    size: "1",
-                    pane: Pane(Empty())
-                ),
-                (
                     size: "100%",
-                    pane: Pane(Property(content: [(kind: Property(Status(InputBuffer())), style: (fg: "blue"), align: Left)]))
+                    pane: Pane(Empty())
                 ),
                 (
 		    size: "28",
