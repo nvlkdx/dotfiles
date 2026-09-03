@@ -2,7 +2,7 @@
 #![enable(unwrap_newtypes)]
 #![enable(unwrap_variant_newtypes)]
 (
-    default_album_art_path: None,
+    default_album_art_path: Some("~/.config/rmpc/default.png"),
     format_tag_separator: " | ",
     browser_column_widths: [20, 38, 42],
     background_color: None,
@@ -56,11 +56,11 @@
     cava: (
         orientation: Bottom,
 	bar_color: Rows([
-		"green",
-		"green",
-		"yellow",
-		"yellow",
 		"red",
+		"red",
+		"yellow",
+		"yellow",
+		"green",
 	])
     ),
     browser_song_format: [
@@ -122,7 +122,7 @@
         ),
         (
             prop: (kind: Property(Album), style: (fg: "white"),
-                default: (kind: Text("NUL"), style: (fg: "default"))
+                default: (kind: Property(File), style: (fg: "default"))
             ),
 	    scroll_speed: 1,
             label_prop: (kind: Text("ALBUM"), style: (fg: "white", modifiers: "Bold")),
@@ -130,7 +130,7 @@
         ),
         (
             prop: (kind: Property(Duration), style: (fg: "yellow"),
-                default: (kind: Text("NUL"), style: (fg: "default"))
+                default: (kind: Text("0:00"), style: (fg: "default"))
             ),
             label_prop: (kind: Text("LEN"), style: (fg: "yellow", modifiers: "Bold")),
             width: "8",
@@ -259,14 +259,14 @@
         "title": Pane(Property(
             content: [
                 (kind: Property(Song(Title)), style: (modifiers: "Bold"),
-                    default: (kind: Text("NUL"), style: (modifiers: "Bold"))),
+                    default: (kind: Property(Song(Filename)), style: (modifiers: "Bold"), default: (kind: Text("for just a moment"), style: (modifiers: "Italic")))),
             ], align: Center, scroll_speed: 1
         )),
         "volume": Split(
             direction: Horizontal,
             panes: [
                 (size: "1", pane: Pane(Property(content: [(kind: Text(""))]))),
-                (size: "100%", pane: Pane(Volume(kind: Slider(symbols: (filled: "─", thumb: "⬢", track: "─"), track_style:(fg:"dark_gray"), filled_style:(fg:"red"), thumb_style:(fg:"red"))))),
+                (size: "100%", pane: Pane(Volume(kind: Slider(symbols: (filled: "─", thumb: "⏹", track: "─"), track_style:(fg:"dark_gray"), filled_style:(fg:"red"), thumb_style:(fg:"red"))))),
                 (size: "3", pane: Pane(Property(content: [(kind: Property(Status(Volume)), style: (fg: "default"))], align: Right))),
                 (size: "2", pane: Pane(Property(content: [(kind: Text("%"), style: (fg: "default"))]))),
             ]
@@ -286,11 +286,24 @@
         )),
         "artist_and_album": Pane(Property(
             content: [
-                (kind: Property(Song(Artist)), style: (fg: "red", modifiers: "Bold"),
-                    default: (kind: Text("NUL"), style: (fg: "red", modifiers: "Bold"))),
-                (kind: Text(" :: ")),
-                (kind: Property(Song(Album)), default: (kind: Text("NUL"))),
-            ], align: Center, scroll_speed: 1
+                (
+                    kind: Group([
+                        (
+                            kind: Property(Song(Artist)),
+                            style: (fg: "red", modifiers: "Bold"),
+                        ),
+                        (kind: Text(" :: ")),
+                        (kind: Property(Song(Album)), style: (fg: "red")),
+                    ]),
+                    default: (
+                        kind: Property(Song(File)),
+                        style: (fg: "red", modifiers: "Bold"),
+			default: (kind: Text("there was silence"), style: (modifiers: "Italic"))
+                    ),
+                ),
+            ],
+            align: Center,
+            scroll_speed: 1,
         )),
         "states": Split(
             direction: Horizontal,
