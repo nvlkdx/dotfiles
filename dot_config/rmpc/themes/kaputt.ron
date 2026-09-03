@@ -66,14 +66,18 @@
     browser_song_format: [
         (
             kind: Group([
+	        (kind: Property(Disc)),
+		(kind: Text("-")),
+	    ])
+	),
+        (
+            kind: Group([
                 (kind: Property(Track)),
                 (kind: Text(" ")),
             ])
         ),
         (
             kind: Group([
-                (kind: Property(Artist)),
-                (kind: Text(" - ")),
                 (kind: Property(Title)),
             ]),
             default: (kind: Property(Filename))
@@ -106,7 +110,7 @@
             ),
 	    scroll_speed: 1,
             label_prop: (kind: Text("TITLE"), style: (fg: "white", modifiers: "Bold")),
-            width: "40%",
+            width: "50%",
         ),
         (
             prop: (kind: Property(Artist), style: (fg: "yellow"),
@@ -114,7 +118,7 @@
             ),
 	    scroll_speed: 1,
             label_prop: (kind: Text("ARTIST"), style: (fg: "yellow", modifiers: "Bold")),
-            width: "30%",
+            width: "25%",
         ),
         (
             prop: (kind: Property(Album), style: (fg: "white"),
@@ -122,7 +126,7 @@
             ),
 	    scroll_speed: 1,
             label_prop: (kind: Text("ALBUM"), style: (fg: "white", modifiers: "Bold")),
-            width: "30%",
+            width: "25%",
         ),
         (
             prop: (kind: Property(Duration), style: (fg: "yellow"),
@@ -207,19 +211,19 @@
                     direction: Horizontal,
                     panes: [
                         (
-                            size: "34%",
+                            size: "30%",
                             borders: "LEFT | TOP | BOTTOM",
                             border_symbols: Plain,
                             pane: Component("header_left")
                         ),
                         (
-                            size: "33%",
+                            size: "40%",
                             borders: "ALL",
                             border_symbols: Inherited(parent: Plain, top_left: "┬", top_right: "┬", bottom_left: "┴", bottom_right: "┴"),
                             pane: Component("header_center")
                         ),
                         (
-                            size: "33%",
+                            size: "30%",
                             borders: "RIGHT | TOP | BOTTOM",
                             border_symbols: Plain,
                             pane: Component("header_right")
@@ -297,6 +301,7 @@
                 ),
                 (
 		    size: "28",
+		    align: Right,
                     pane: Pane(Property(content: [
                         (kind: Text("["), style: (fg: "default", modifiers: "Bold")),
                         (kind: Property(Status(RepeatV2(

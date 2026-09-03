@@ -9,7 +9,8 @@ PanelWindow {
 	anchors.top: true
 
 	color: "transparent"
-	implicitHeight: 40
+	implicitHeight: 0
+	implicitWidth: 0
 	exclusionMode: ExclusionMode.Normal
 	exclusiveZone: Math.max(midBar.height + midBar.y, leftBar.height + leftBar.y, rightBar.height + rightBar.y)
 

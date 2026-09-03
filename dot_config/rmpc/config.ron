@@ -124,7 +124,7 @@
             "/":          EnterSearch,
             "n":          NextResult,
             "N":          PreviousResult,
-            "a":          Add,
+            "a":          Add, // look into AddOptions
             "A":          AddAll,
             "D":          Delete,
             "<C-r>":      Rename,
@@ -158,7 +158,7 @@
         ],
     ),
     artists: (
-        album_display_mode: SplitByDate,
+        album_display_mode: NameOnly,
         album_sort_by: Date,
         album_date_tags: [Date],
     ),
