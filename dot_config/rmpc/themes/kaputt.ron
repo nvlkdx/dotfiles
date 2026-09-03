@@ -89,7 +89,7 @@
                 default: (kind: Property(Other("albumartist")), style: (fg: "default"))
             ),
             label_prop: (kind: Text("POS"), style: (fg: "white", modifiers: "Bold")),
-            width: "6",
+            width: "5",
         ),
         (
             prop: (
@@ -102,7 +102,7 @@
                 default: (kind: Property(Track), style: (fg: "yellow"), default: (kind: Text("00"), style: (fg: "yellow")))
             ),
             label_prop: (kind: Text("NO"), style: (fg: "yellow", modifiers: "Bold")),
-            width: "4",
+            width: "5",
         ),
         (
             prop: (kind: Property(Title), style: (fg: "white"),

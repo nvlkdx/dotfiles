@@ -169,7 +169,7 @@
                 direction: Horizontal,
                 panes: [
                     (
-                        size: "35%",
+                        size: "30%",
                         pane: Split(
                             direction: Vertical,
                             panes: [
@@ -189,7 +189,7 @@
                         ),
                     ), 
                     (
-                        size: "65%",
+                        size: "70%",
                         pane: Split(
                             direction: Vertical,
                             panes: [
