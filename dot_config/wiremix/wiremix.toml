@@ -1,0 +1,11 @@
+#remote = "pipewire-0"
+#fps = 60.0
+mouse = true
+peaks = "auto"
+char_set = "default"
+theme = "default"
+tab = "output"
+tabs = [ "output", "playback", "input", "recording", "configuration" ]
+max_volume_percent = 200.0
+enforce_max_volume = false
+lazy_capture = false
