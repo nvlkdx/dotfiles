@@ -29,3 +29,11 @@ rl() {
 mvdir() {
   mkdir -p "${@: -1}" && mv "$@"
 }
+chez() {
+  chezmoi re-add
+  git add .
+  git branch -M main
+  git commit -m '.'
+  wl-copy < ~/.git/tk/dot
+  git push -u origin main
+}
