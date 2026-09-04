@@ -6,10 +6,11 @@ bgo='0.75'
 
 # main
 case ${cmd[0]} in
-	"muspick") script='mp' ;;
+	"muspick") script='mp -d' ;;
+	"plpick") script='mp -dp' ;;
 	"mixer") script='wiremix' ;;
 	"network") script='nmtui' ;;
 	*) echo "[dsh!] unrecognized desktop shell script [ ${cmd[0]} ]"; echo "[dsh/] aborting"; exit 1 ;;
 esac
 
-kitty -o background_opacity="$bgo" --class dsh::"${cmd[0]}" "$script" "${cmd[@]:1}"
+kitty -o background_opacity="$bgo" --class "dsh::${cmd[0]}" $script

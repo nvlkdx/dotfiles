@@ -1,5 +1,5 @@
 binds {
-	// MACROPAD LAYER 1: AUDIO
+	/// LAYER 1: AUDIO \\\
 	// KNOBS
 	XF86AudioRaiseVolume		allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+ -l 1.0"; }
 	XF86AudioLowerVolume		allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }
@@ -8,8 +8,8 @@ binds {
 	XF86AudioNext			allow-when-locked=true { spawn-sh "mpc next"; }
 	XF86AudioRewind			allow-when-locked=true { spawn-sh "mpc seek -2"; }
 	XF86AudioForward		allow-when-locked=true { spawn-sh "mpc seek +2"; }
-	Shift+XF86AudioRaiseVolume	allow-when-locked=true { spawn-sh "mpc volume +2"; }
-	Shift+XF86AudioLowerVolume	allow-when-locked=true { spawn-sh "mpc volume -2"; }
+	XF86Forward			allow-when-locked=true { spawn-sh "mpc volume +2"; }
+	XF86Back			allow-when-locked=true { spawn-sh "mpc volume -2"; }
 
 	// ROW 1 [QUEUE CONTROLS]
 	XF86Tools			allow-when-locked=true { spawn-sh "mpc repeat"; }
@@ -28,4 +28,23 @@ binds {
 	XF86TouchpadOn			allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-prev-tmp-pl"; }
 	F23				allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-next-tmp-pl"; }
 	F24				allow-when-locked=true { spawn-sh "~/.sh/mmpc del-tmp-pl"; }
+
+	/// LAYER 2: LAUNCHER \\\
+	// ROW 1 [DESKTOP SHELL]
+	XF86Calculator			{ spawn-sh "~/.sh/dsh muspick"; }
+	XF86Mail			{ spawn-sh "~/.sh/dsh plpick"; }
+	XF86Open			{ spawn-sh "~/.sh/dsh mixer"; }
+	XF86Explorer			{ spawn-sh "~/.sh/dsh network"; }
+	
+	// ROW 2 [TBD]
+	Muhenkan			{ spawn-sh "notify-send 2-1"; }
+	Hangul_Hanja			{ spawn-sh "notify-send 2-2"; }
+	Hangul				{ spawn-sh "notify-send 2-3"; }
+	Henkan_Mode			{ spawn-sh "notify-send 2-4"; }
+
+	// ROW 3 [TBD]
+	XF86HomePage			{ spawn-sh "notify-send 3-1"; }
+	XF86Reload			{ spawn-sh "notify-send 3-2"; }
+	XF86Favorites			{ spawn-sh "notify-send 3-3"; }
+	XF86Search			{ spawn-sh "notify-send 3-4"; }
 }

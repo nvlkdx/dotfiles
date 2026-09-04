@@ -142,18 +142,9 @@ binds {
 	// Mod+Shift+Space 	{ switch-layout "prev"; }
 
 	/// SHELL & LAUNCHING \\\
-	Mod+M			{ spawn-sh "~/.sh/dsh muspick -dk"; }
-	Mod+Ctrl+M		{ spawn-sh "~/.sh/dsh muspick -dkq"; }
-	Mod+Shift+M		{ spawn-sh "~/.sh/dsh muspick -dkqi"; }
-	Mod+Ctrl+Shift+M	{ spawn-sh "~/.sh/dsh muspick -d"; }
-
-	Mod+P			{ spawn-sh "~/.sh/dsh muspick -dkp"; }
-	Mod+Ctrl+P		{ spawn-sh "~/.sh/dsh muspick -dkqp"; }
-	Mod+Shift+P		{ spawn-sh "~/.sh/dsh muspick -dp"; }
-
-	Mod+X			{ spawn-sh "~/.sh/dsh mixer"; }
-	Mod+Shift+X		{ spawn-sh "~/.sh/dsh mixer -v output"; }
-	
+	Mod+M			{ spawn-sh "~/.sh/dsh muspick"; }
+	Mod+P			{ spawn-sh "~/.sh/dsh plpick"; }
+	Mod+X			{ spawn-sh "~/.sh/dsh mixer"; }	
 	Mod+N			{ spawn-sh "~/.sh/dsh network"; }
 
 	/// MISC \\\

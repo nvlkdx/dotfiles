@@ -37,9 +37,6 @@ prs-flg() {
 	local arg=$1
 	case "$arg" in
 		"h" | "help") flg+=("HELP") ;;
-		"i" | "insert") flg+=("INSERT") ;;
-		"k" | "keep") flg+=("KEEP") ;;
-		"q" | "queue") flg+=("QUEUE") ;;
 		"b" | "blocks") flg+=("BLOCKS") ;;
 		"d" | "desktop") flg+=("DESKTOP") ;;
 		"p" | "playlist") flg+=("PLAYLIST") ;;
@@ -81,13 +78,6 @@ for i in {1..$#flg}; do
 		"HELP")
 			banner
 			echo "[.] usage: mp [-options]"
-			echo "[.] -i | --insert"
-			echo "[,]    inserts to queue instead of adding"
-			echo "[.] -k | --keep"
-			echo "[,]    keeps queue instead of clearing it"
-			echo "[.] -q | --queue"
-			echo "[,]    queues up songs instead of playing"
-			echo "[,]    them immediately"
 			echo "[.] -b | --blocks"
 			echo "[,]    renders using blocks instead of"
 			echo "[,]    kitty's icat functionality"
@@ -100,9 +90,6 @@ for i in {1..$#flg}; do
 			echo
 			exit 0
 			;;
-		"INSERT") insert=1 ;;
-		"KEEP") keep=1 ;;
-		"QUEUE") queue=1 ;;
 		"BLOCKS") blocks=1 ;;
 		"DESKTOP") desktop=1 ;;
 		"PLAYLIST") playlist=1 ;;
@@ -126,14 +113,27 @@ fi
 # playlist logic
 if [ $playlist = 1 ]; then
 	prevwin='top,50%'
-	binds='f1:select-all,f2:deselect-all,f3:toggle-all,f7:execute(mpc -q crop),f8:execute(mpc -q clear)'
+	binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
 
 	mpl=$(mpc lsplaylists|fzf --gap --gap-line='─' --preview 'mpc playlist {}' --preview-window="$prevwin" "$cls" --bind "$binds")
+
+	mpla=( ${(f)mpl} )
+
+	for i in {1..$#mpla}; do
+		if [[ ${mpla[$i][1,8]} == "MPMODE::" ]]; then
+			case "${mpla[$i]:8}" in
+				"TAILP" | "NEXTP") keep=1; queue=0; mpla[$i]=() ;; 
+				"TAILQ" | "NEXTQ") keep=1; queue=1; mpla[$i]=() ;;
+				"CLEAR") keep=0; queue=0; mpla[$i]=() ;;
+				*) ;;
+			esac
+		fi
+	done
 
 	if ! [[ "$mpl" == "" ]]; then
 		qs=$(mpc playlist|wc -l)
 		if ! [ $keep = 1 ]; then mpc -q clear; fi
-		for i in ${(f)mpl}; do mpc -q load "$i" > /dev/null; done
+		for i in $mpla; do mpc -q load "$i" > /dev/null; done
 		if ! [ $queue = 1 ]; then 
 			if [ $keep = 1 ]; then
 				mpc -q play $(( qs + 1 ))
@@ -164,7 +164,7 @@ kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f
 
 symbolsprev="{ ${ffmpeg_grab} || ${mpc_grab} } | ${sp_chafa_img} 2>/dev/null || echo"
 
-binds='f1:select-all,f2:deselect-all,f3:toggle-all,f4:execute(kitten icat --clear),f5:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f6:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f7:execute(mpc -q crop),f8:execute(mpc -q clear)'
+binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),f1:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f2:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f3:change-with-nth(1|2),f4:refresh-preview,enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
 
 prevwin='top,50%'
 
@@ -174,13 +174,28 @@ else
 	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$symbolsprev" --preview-window="$prevwin" "$cls" --bind "$binds")
 fi
 
+mpa=( ${(f)mp} )
+
+for i in {1..$#mpa}; do
+	if [[ ${mpa[$i][1,8]} == "MPMODE::" ]]; then
+		case "${mpa[$i]:8}" in
+			"TAILP") keep=1; insert=0; queue=0; mpa[$i]=() ;;
+			"NEXTP") keep=1; insert=1; queue=0; mpa[$i]=() ;; 
+			"TAILQ") keep=1; insert=0; queue=1; mpa[$i]=() ;;
+			"NEXTQ") keep=1; insert=1; queue=1; mpa[$i]=() ;;
+			"CLEAR") keep=0; insert=0; queue=0; mpa[$i]=() ;;
+			*) ;;
+		esac
+	fi
+done
+
 if ! [[ "$mp" == "" ]]; then
 	qs=$(mpc playlist|wc -l)
 	if ! [ $keep = 1 ]; then mpc -q clear; fi
 	if ! [ $insert = 1 ]; then 
-		for i in ${(f)mp}; do mpc -q add "$i"; done
+		for i in $mpa; do mpc -q add "$i"; done
 	else 
-		for i in ${(f)mp}; do mpc -q insert "$i"; done
+		for i in $mpa; do mpc -q insert "$i"; done
 	fi
 	if ! [ $queue = 1 ]; then 
 		if [ $keep = 1 ]; then
