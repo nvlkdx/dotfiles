@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-source ~/.env/MPC_FORMAT
-source ~/.env/FZF_DEFAULT_OPTS
-source ~/.env/USR_MUSIC_DIR
+source ~/.env/MPC_FORMAT &>/dev/null
+source ~/.env/FZF_DEFAULT_OPTS &>/dev/null
+source ~/.env/USR_MUSIC_DIR &>/dev/null
 
 cmd=("$@")
 
@@ -28,6 +28,11 @@ banner() {
 	echo "                ▒▒▒▒▒"
 	echo
 }
+
+DEPS=('mpc' 'fzf' 'chafa' 'ffmpeg')
+for dep in $DEPS; do whence -p $dep &>/dev/null || { echo "[mp!] mp relies on $dep\n[mp/] aborting"; exit 1 }; done
+
+export MUSDIR=$USR_MUSIC_DIR || $XDG_MUSIC_DIR
 
 ### parsing
 
@@ -65,7 +70,7 @@ if [ $#flg = 0 ]; then
 	flg=("none")
 fi
 
-if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo "[mp!] mp takes no arguments\n[mp/] aborting" && exit 1; fi
+if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo "[mp!] mp takes no arguments\n[mp/] aborting"; exit 1; fi
 
 for i in {1..$#flg}; do
 	case "${flg[$i]}" in
@@ -87,6 +92,19 @@ for i in {1..$#flg}; do
 			echo "[,]    selects playlists instead of songs"
 			echo "[.] -h | --help"
 			echo "[,]    prints this message"
+			echo "[ ]"
+			echo "[.] this program sources environment vars"
+			echo "[,] from \$HOME/.env/, including MPC_FORMAT,"
+			echo "[,] FZF_DEFAULT_OPTS, and USR_MUSIC_DIR;"
+			echo "[,] file names are that of the variables"
+			echo "[,] and consist of a single export VAR=''"
+			echo "[ ]"
+			echo "[.] to queue up songs press"
+			echo "[,] ctrl/alt+space/backspace, press f1 to"
+			echo "[,] reload the song database, f2 load a"
+			echo "[,] shuffled database, f3 to search files"
+			echo "[,] instead of song names, and f4 to reload"
+			echo "[,] the preview"
 			echo
 			exit 0
 			;;
@@ -149,7 +167,7 @@ fi
 
 # non-playlist
 
-ffmpeg_grab='ffmpeg -loglevel quiet -i file:$USR_MUSIC_DIR/{1} -an -c:v copy -f image2pipe -'
+ffmpeg_grab='ffmpeg -loglevel quiet -i file:$MUSDIR/{1} -an -c:v copy -f image2pipe -'
 mpc_grab='mpc readpicture {1}'
 
 sp_chafa_img='chafa - -f symbols --animate=off --stretch --size="$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES"'
