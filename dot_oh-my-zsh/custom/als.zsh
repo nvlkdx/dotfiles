@@ -36,4 +36,5 @@ chez() {
   git commit -m '.'
   wl-copy < ~/.git/tk/dot
   git push -u origin main
+  wl-copy -c
 }
