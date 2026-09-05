@@ -49,7 +49,7 @@ case "${cmd[0]}" in
 	"zsh") $EDITOR ~/.zshrc ;;
 	"zsh-als") $EDITOR ~/.oh-my-zsh/custom/als.zsh ;;
 	"zsh-env") $EDITOR ~/.oh-my-zsh/custom/env.zsh ;;
-	"zsh-theme") $EDITOR ~/.oh-my-zsh/themes/vira.zsh-theme ;;
+	"zsh-theme") $EDITOR ~/.oh-my-zsh/custom/themes/vira.zsh-theme ;;
 	"wallust") $EDITOR ~/.config/wallust/wallust.toml ;;
 	"cava") $EDITOR ~/.config/wallust/templates/cava ;;
 	"drift") $EDITOR ~/.config/wallust/templates/drift ;;
