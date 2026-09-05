@@ -144,7 +144,10 @@ body       = {}
 list       = {}
 btn_yes    = { reversed = true }
 btn_no     = {}
-btn_labels = [ "  [Y]es  ", "  (N)o  " ]
+btn_labels = [ "  [y]ea  ", "  [n]ah  " ]
+
+[confirm.border_style]
+type = "sharp"
 
 # : }}}
 
