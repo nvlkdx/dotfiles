@@ -20,5 +20,8 @@ if [[ $TERM = "xterm-kitty" ]]; then ~/.config/kitty/startup.sh; fi
 source $ZSH_CUSTOM/als.zsh
 source $ZSH_CUSTOM/env.zsh
 
+# termsaver
+whence -p drift &>/dev/null && eval "$(drift shell-init zsh)"
+
 # greetings and salutations
 whence -p figlet &>/dev/null && { echo && figlet -cf "$(shuf -n 1 $ZSH_CUSTOM/zsh-greet-fonts)" -w "$COLUMNS" "$(shuf -n 1 $ZSH_CUSTOM/zsh-greets)" }
