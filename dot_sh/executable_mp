@@ -30,9 +30,9 @@ banner() {
 }
 
 DEPS=('mpc' 'fzf' 'chafa' 'ffmpeg')
-for dep in $DEPS; do whence -p $dep &>/dev/null || { echo "[mp!] mp relies on $dep\n[mp/] aborting"; exit 1 }; done
+for dep in $DEPS; do whence -p $dep &>/dev/null || { echo -e "[mp!] mp relies on $dep\n[mp/] aborting"; exit 1 }; done
 
-export MUSDIR=$USR_MUSIC_DIR || $XDG_MUSIC_DIR
+export MUSDIR="${USR_MUSIC_DIR:-$XDG_MUSIC_DIR}"
 
 ### parsing
 
@@ -70,7 +70,7 @@ if [ $#flg = 0 ]; then
 	flg=("none")
 fi
 
-if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo "[mp!] mp takes no arguments\n[mp/] aborting"; exit 1; fi
+if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo -e "[mp!] mp takes no arguments\n[mp/] aborting"; exit 1; fi
 
 for i in {1..$#flg}; do
 	case "${flg[$i]}" in
@@ -125,7 +125,7 @@ if ! [ $desktop = 1 ]; then
 	cls='--clear'
 else
 	cls='--no-clear'
-	if [[ $TERM = "xterm-kitty" ]]; then ~/.config/kitty/startup.sh; fi
+	if [[ $TERM = "xterm-kitty" ]]; then ~/.config/kitty/startup.sh &>/dev/null; fi
 fi
 
 # playlist logic
@@ -182,7 +182,7 @@ kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f
 
 symbolsprev="{ ${ffmpeg_grab} || ${mpc_grab} } | ${sp_chafa_img} 2>/dev/null || echo"
 
-binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),f1:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f2:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f3:change-with-nth(1|2),f4:refresh-preview,enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
+binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),f1:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f2:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f3:change-with-nth(1|2),f4:refresh-preview,enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)'
 
 prevwin='top,50%'
 
