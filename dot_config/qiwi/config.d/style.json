@@ -12,7 +12,8 @@
 			"periphSizePrc": 0.5,
 			"sideMarginPrc": 0,
 			"panelHeightPx": 42,
-			"panelSlantPx": 36
+			"panelSlantPx": 36,
+			"exclusiveZoneBool": true
 		},
 
 		"SideBar": {

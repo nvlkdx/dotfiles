@@ -12,7 +12,7 @@ PanelWindow {
 	implicitHeight: 0
 	implicitWidth: 0
 	exclusionMode: ExclusionMode.Normal
-	exclusiveZone: Math.max(midBar.height + midBar.y, leftBar.height + leftBar.y, rightBar.height + rightBar.y)
+	exclusiveZone: Config.style.TopBar.exclusiveZoneBool ? Math.max(midBar.height + midBar.y, leftBar.height + leftBar.y, rightBar.height + rightBar.y) : 0
 
 	function _hextorgba(hex, alpha) {
 		const cleanHex = hex.replace("#","");

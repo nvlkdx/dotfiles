@@ -91,7 +91,8 @@ Singleton {
 			"midSizePrc": config._clamp(config.dat.Style?.TopBar?.midSizePrc, 0, 1) ?? 0.25,
 			"sideMarginPrc": config._clamp(config.dat.Style?.TopBar?.sideMarginPrc, 0, 1) ?? 0,
 			"panelHeightPx": config.dat.Style?.TopBar?.panelHeightPx ?? 42,
-			"panelSlantPx": config.dat.Style?.TopBar?.panelSlantPx ?? 36
+			"panelSlantPx": config.dat.Style?.TopBar?.panelSlantPx ?? 36,
+			"exclusiveZoneBool": Boolean(config.dat.Style?.TopBar?.exclusiveZoneBool) ?? false
 		}
 	}
 }
