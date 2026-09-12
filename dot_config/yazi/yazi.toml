@@ -7,7 +7,7 @@
 ratio          = [ 1, 4, 3 ]
 sort_by        = "alphabetical"
 sort_sensitive = false
-sort_reverse 	 = false
+sort_reverse   = false
 sort_dir_first = true
 sort_translit  = false
 sort_fallback  = "alphabetical"
@@ -18,7 +18,7 @@ scrolloff      = 5
 mouse_events   = [ "click", "scroll", "drag" ]
 
 [preview]
-wrap            = "no"
+wrap            = "yes"
 tab_size        = 2
 max_width       = 600
 max_height      = 900
@@ -172,6 +172,14 @@ previewers = [
 	{ mime = "null/*", run = "null" },
 	# Fallback
 	{ url = "*", run = "file" },
+]
+prepend_previewers = [
+	{ mime = 'audio/mpegurl', run = 'code' },
+	{ mime = 'audio/*', run = 'preview-audio' },
+]
+prepend_preloaders = [
+	{ mime = 'audio/mpegurl', run = 'code' },
+	{ mime = 'audio/*', run = 'preview-audio' },
 ]
 
 [input]

@@ -1,0 +1,17 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:full-border"
+rev = "58c4f4e"
+hash = "f281261ff04ad7ec867c3f802a50835f"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "58c4f4e"
+hash = "5bb0bfab901d3601c370eafdd66edd31"
+
+[[plugin.deps]]
+use = "AminurAlam/yazi-plugins:preview-audio"
+rev = "9997d5b"
+hash = "475141b0337cf9934b0bc81202e2537c"
+
+[flavor]
+deps = []

@@ -46,7 +46,7 @@ PanelWindow {
 
 		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
-		onYChanged: midBarVisual.requestPaint()
+		onYChanged: mbVisual.requestPaint()
 		property int x: 0
 
 		property int xStart: (screen.width / 2) - (width / 2)
@@ -55,40 +55,40 @@ PanelWindow {
 		implicitWidth: (screen.width * Config.style.TopBar.midSizePrc) + borderWidth
 		implicitHeight: Config.style.TopBar.panelHeightPx
 		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
-		onSlantChanged: midBarVisual.requestPaint()
+		onSlantChanged: mbVisual.requestPaint()
 
 		property real visualWidth: width - borderWidth
-		onVisualWidthChanged: midBarVisual.requestPaint()
+		onVisualWidthChanged: mbVisual.requestPaint()
 		property real visualHeight: height
-		onVisualHeightChanged: midBarVisual.requestPaint()
+		onVisualHeightChanged: mbVisual.requestPaint()
 
 		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
-		onBorderWidthChanged: midBarVisual.requestPaint()
+		onBorderWidthChanged: mbVisual.requestPaint()
 
 		color: "transparent"
 
 		Item {
-			id: midBarColors
+			id: mbColors
 
 			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
-			onBackgroundChanged: midBarVisual.requestPaint()
+			onBackgroundChanged: mbVisual.requestPaint()
 
 			property color border: Config.colors.Special.border
 			ColorAnim on border {}
-			onBorderChanged: midBarVisual.requestPaint()
+			onBorderChanged: mbVisual.requestPaint()
 
 			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
-			onBaseForegroundChanged: midBarVisual.requestPaint()
+			onBaseForegroundChanged: mbVisual.requestPaint()
 		}
 
 		property bool active: false
 		property bool visible: true
 
 		Canvas {
-			id: midBarVisual
+			id: mbVisual
 
 			anchors.fill: parent
 
@@ -103,11 +103,11 @@ PanelWindow {
 					ctx.lineTo(midBar.x + midBar.visualWidth, midBar.y);
 					ctx.closePath();
 			    
-					ctx.fillStyle = midBarColors.background;
+					ctx.fillStyle = mbColors.background;
 					ctx.fill();
 			    
 					if (midBar.borderWidth > 0) {
-						ctx.strokeStyle = midBarColors.border
+						ctx.strokeStyle = mbColors.border
 						ctx.lineWidth = midBar.borderWidth
 						ctx.stroke();
 					}
@@ -125,7 +125,7 @@ PanelWindow {
 		}
 
 		Rectangle {
-			id: midBarTextSpace
+			id: mbTextSpace
 
 			x: midBar.x + ( midBar.borderWidth * 1.5 ) + ( midBar.slant )
 			y: midBar.y
@@ -137,16 +137,16 @@ PanelWindow {
 			color: "transparent"
 
 			Text {
-				id: midBarTextField
+				id: mbTextField
 				width: parent.width
 
 				anchors.fill: parent
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 
-				color: midBarColors.baseForeground
+				color: mbColors.baseForeground
 				font.family: Config.style.Global.fontFamily
-				font.pixelSize: parent.fontSize
+				font.pixelSize: mbTextSpace.fontSize
 
 				elide: Text.ElideLeft
 
@@ -167,39 +167,39 @@ PanelWindow {
 
 		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
-		onYChanged: leftBarVisual.requestPaint()
+		onYChanged: lbVisual.requestPaint()
 		property int x: Math.min(Math.max(screen.width * Config.style.TopBar.sideMarginPrc, midBar.xStart - (midBar.visualWidth * Config.style.TopBar.periphSizePrc)), midBar.xStart)
-		onXChanged: leftBarVisual.requestPaint()
+		onXChanged: lbVisual.requestPaint()
 		
 		implicitWidth: midBar.xStart + borderWidth
 		implicitHeight: Config.style.TopBar.panelHeightPx
 		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
-		onSlantChanged: leftBarVisual.requestPaint()
+		onSlantChanged: lbVisual.requestPaint()
 
 		property real visualWidth: midBar.xStart - leftBar.x
-		onVisualWidthChanged: leftBarVisual.requestPaint()
+		onVisualWidthChanged: lbVisual.requestPaint()
 		property real visualHeight: height
-		onVisualHeightChanged: leftBarVisual.requestPaint()
+		onVisualHeightChanged: lbVisual.requestPaint()
 
 		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
-		onBorderWidthChanged: leftBarVisual.requestPaint()
+		onBorderWidthChanged: lbVisual.requestPaint()
 
 		color: "transparent"
 		Item {
-			id: leftBarColors
+			id: lbColors
 
 			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
-			onBackgroundChanged: leftBarVisual.requestPaint()
+			onBackgroundChanged: lbVisual.requestPaint()
 
 			property color border: Config.colors.Special.border
 			ColorAnim on border {}
-			onBorderChanged: leftBarVisual.requestPaint()
+			onBorderChanged: lbVisual.requestPaint()
 
 			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
-			onBaseForegroundChanged: leftBarVisual.requestPaint()
+			onBaseForegroundChanged: lbVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -215,7 +215,7 @@ PanelWindow {
 		}
 
 		Canvas {
-			id: leftBarVisual
+			id: lbVisual
 
 			anchors.fill: parent
 
@@ -230,11 +230,11 @@ PanelWindow {
 					ctx.lineTo(leftBar.x + leftBar.visualWidth - leftBar.slant, leftBar.y);
 					ctx.closePath();
 			    
-					ctx.fillStyle = leftBarColors.background;
+					ctx.fillStyle = lbColors.background;
 					ctx.fill();
 			    
 					if (leftBar.borderWidth > 0) {
-						ctx.strokeStyle = leftBarColors.border
+						ctx.strokeStyle = lbColors.border
 						ctx.lineWidth = leftBar.borderWidth
 						ctx.stroke();
 					}
@@ -255,38 +255,39 @@ PanelWindow {
 
 		property int y: active ? -borderWidth / 2 : -height - (borderWidth / 2)
 		EaseAnim on y {}
-		onYChanged: rightBarVisual.requestPaint()
+		onYChanged: rbVisual.requestPaint()
 		property int x: 0
 		
 		implicitWidth: screen.width - midBar.xEnd + borderWidth
 		implicitHeight: Config.style.TopBar.panelHeightPx
 		property real slant: Math.min(visualWidth / 3, Config.style.TopBar.panelSlantPx)
-		onSlantChanged: rightBarVisual.requestPaint()
+		onSlantChanged: rbVisual.requestPaint()
 
 		property real visualWidth: Math.max(0, Math.min(midBar.visualWidth * Config.style.TopBar.periphSizePrc, Math.max(width - (screen.width * Config.style.TopBar.sideMarginPrc))))
-		onVisualWidthChanged: rightBarVisual.requestPaint()
+		onVisualWidthChanged: rbVisual.requestPaint()
 		property real visualHeight: height
-		onVisualHeightChanged: rightBarVisual.requestPaint()
+		onVisualHeightChanged: rbVisual.requestPaint()
 
 		exclusionMode: ExclusionMode.Ignore
 		property real borderWidth: Math.max(0, Math.min(visualHeight / 3, Config.style.TopBar.borderWidth))
-		onBorderWidthChanged: rightBarVisual.requestPaint()
+		onBorderWidthChanged: rbVisual.requestPaint()
 
 		color: "transparent"
+
 		Item {
-			id: rightBarColors
+			id: rbColors
 
 			property color background: root._hextorgba(Config.colors.Special.background, Config.style.Global.backgroundOpacity)
 			ColorAnim on background {}
-			onBackgroundChanged: rightBarVisual.requestPaint()
+			onBackgroundChanged: rbVisual.requestPaint()
 
 			property color border: Config.colors.Special.border
 			ColorAnim on border {}
-			onBorderChanged: rightBarVisual.requestPaint()
+			onBorderChanged: rbVisual.requestPaint()
 
 			property color baseForeground: Config.colors.Special.foreground
 			ColorAnim on baseForeground {}
-			onBaseForegroundChanged: rightBarVisual.requestPaint()
+			onBaseForegroundChanged: rbVisual.requestPaint()
 		}
 
 		property bool active: false
@@ -302,7 +303,7 @@ PanelWindow {
 		}
 
 		Canvas {
-			id: rightBarVisual
+			id: rbVisual
 
 			anchors.fill: parent
 
@@ -317,11 +318,11 @@ PanelWindow {
 					ctx.lineTo(rightBar.x + rightBar.visualWidth, rightBar.y);
 					ctx.closePath();
 			    
-					ctx.fillStyle = rightBarColors.background;
+					ctx.fillStyle = rbColors.background;
 					ctx.fill();
 			    
 					if (rightBar.borderWidth > 0) {
-						ctx.strokeStyle = rightBarColors.border;
+						ctx.strokeStyle = rbColors.border;
 						ctx.lineWidth = rightBar.borderWidth
 						ctx.stroke();
 					}
@@ -329,5 +330,4 @@ PanelWindow {
 			}
 		}
 	}
-
 }
