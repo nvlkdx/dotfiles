@@ -37,6 +37,7 @@ case "${cmd[0]}" in
 	"mpd-service") sudo $EDITOR /usr/lib/systemd/user/mpd.service ;;
 	"rmpc") $EDITOR ~/.config/rmpc/config.ron ;;
 	"rmpc-theme") $EDITOR ~/.config/rmpc/themes/kaputt.ron ;;
+	"rmpc-change") $EDITOR ~/.config/rmpc/change.sh ;;
 	"kitty") $EDITOR ~/.config/kitty/kitty.conf ;;
 	"kitty-colors") $EDITOR ~/.config/wallust/templates/kitty ;;
 	"kitty-startup") $EDITOR ~/.config/kitty/startup.sh ;;

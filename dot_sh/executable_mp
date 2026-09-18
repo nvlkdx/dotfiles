@@ -100,7 +100,7 @@ for i in {1..$#flg}; do
 			echo "[,] and consist of a single export VAR=''"
 			echo "[ ]"
 			echo "[.] to queue up songs press"
-			echo "[,] ctrl/alt+space/backspace, press f1 to"
+			echo "[,] ctrl/alt + space/backspace, press f1 to"
 			echo "[,] reload the song database, f2 load a"
 			echo "[,] shuffled database, f3 to search files"
 			echo "[,] instead of song names, and f4 to reload"
