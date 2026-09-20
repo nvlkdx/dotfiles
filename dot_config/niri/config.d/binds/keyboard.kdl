@@ -146,6 +146,7 @@ binds {
 	Mod+P			{ spawn-sh "~/.sh/dsh plpick"; }
 	Mod+X			{ spawn-sh "~/.sh/dsh mixer"; }	
 	Mod+N			{ spawn-sh "~/.sh/dsh network"; }
+	Mod+A			{ spawn-sh "~/.sh/dsh calc"; }
 
 	/// MISC \\\
 	Print			{ screenshot; }

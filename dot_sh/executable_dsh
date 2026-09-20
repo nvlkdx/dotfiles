@@ -10,6 +10,7 @@ case ${cmd[0]} in
 	"plpick") script='mp -dp' ;;
 	"mixer") script='wiremix' ;;
 	"network") script='nmtui' ;;
+	"calc") script='calc' ;;
 	*) echo "[dsh!] unrecognized desktop shell script [ ${cmd[0]} ]"; echo "[dsh/] aborting"; exit 1 ;;
 esac
 
