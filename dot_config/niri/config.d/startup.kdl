@@ -1,2 +1,3 @@
 /// DAEMONS
 // spawn-at-startup "awww-daemon"
+spawn-at-startup "neowall"
