@@ -9,5 +9,11 @@ import "mod/proc"
 ShellRoot {
 	id: root
 
-	TopBar {}
+	Variants {
+		model: Quickshell.screens
+		TopBar {
+			property var modelData
+			screen: modelData
+		}
+	}
 }

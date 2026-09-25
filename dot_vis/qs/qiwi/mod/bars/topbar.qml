@@ -40,6 +40,7 @@ PanelWindow {
 
 	PanelWindow {
 		id: midBar
+		screen: root.screen
 
 		anchors.top: true
 		margins.top: -1
@@ -157,6 +158,7 @@ PanelWindow {
 
 	PanelWindow {
 		id: leftBar
+		screen: root.screen
 
 		anchors {
 			top: true
@@ -245,6 +247,7 @@ PanelWindow {
 
 	PanelWindow {
 		id: rightBar
+		screen: root.screen
 
 		anchors {
 			top: true
