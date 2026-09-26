@@ -1,13 +1,13 @@
 import Quickshell
 import QtQuick
 import ".."
-import "../bars"
 
 ShellRoot {
 	id: root
 
 	PanelWindow {
 		id: appDisplay
+		screen: root.parentBar.screen
 
 		anchors {
 			left: true
@@ -16,10 +16,10 @@ ShellRoot {
 			right: true
 		}
 
-		property real visualWidth: TopBar.midBar.visualWidth
+		property real visualWidth: root.parentBar.visualWidth
 
-		property real xStart: midBar.xStart
-		property real xEnd: midBar.xEnd
+		property real xStart: root.parentBar.xStart
+		property real xEnd: root.parentBar.xEnd
 
 		Canvas {
 			id: adVisual

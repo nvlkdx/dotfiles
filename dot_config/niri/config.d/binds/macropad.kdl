@@ -10,6 +10,7 @@ binds {
 	XF86AudioForward		allow-when-locked=true { spawn-sh "mpc seek +2"; }
 	XF86Forward			allow-when-locked=true { spawn-sh "mpc volume +2"; }
 	XF86Back			allow-when-locked=true { spawn-sh "mpc volume -2"; }
+	XF86AudioMute			allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
 
 	// ROW 1 [QUEUE CONTROLS]
 	XF86Tools			allow-when-locked=true { spawn-sh "mpc repeat"; }

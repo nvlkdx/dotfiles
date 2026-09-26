@@ -10,10 +10,14 @@ ShellRoot {
 	id: root
 
 	Variants {
+		id: screenVariants
 		model: Quickshell.screens
-		TopBar {
+
+		delegate: TopBar {
 			property var modelData
 			screen: modelData
+
+			Launcher {}
 		}
 	}
 }
