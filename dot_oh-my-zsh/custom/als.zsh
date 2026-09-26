@@ -1,7 +1,7 @@
 alias py='python'
 alias nvm='nvim'
 alias e='$EDITOR'
-alias ff='fastfetch'
+alias ff='fastfetch --logo none'
 alias rsync-exfat='sudo rsync -rltDv --delete --modify-window=1 --progress'
 alias yz='yazi'
 alias start='./start.sh'
