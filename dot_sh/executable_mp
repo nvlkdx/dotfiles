@@ -64,13 +64,11 @@ for i in {1..$#cmd}; do
 	fi
 done
 
-cmd=("${cmd[@]}")
+cmd=($cmd)
 
 if [ $#flg = 0 ]; then
 	flg=("none")
 fi
-
-if ! [[ $(echo "${cmd[@]}" | tr -d ' ') == "" ]]; then echo -e "[mp!] mp takes no arguments\n[mp/] aborting"; exit 1; fi
 
 for i in {1..$#flg}; do
 	case "${flg[$i]}" in
@@ -133,7 +131,7 @@ if [ $playlist = 1 ]; then
 	prevwin='top,50%'
 	binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
 
-	mpl=$(mpc lsplaylists|fzf --gap --gap-line='─' --preview 'mpc playlist {}' --preview-window="$prevwin" "$cls" --bind "$binds")
+	mpl=$(mpc lsplaylists|fzf --gap --gap-line='─' --preview 'mpc playlist {}' --preview-window="$prevwin" "$cls" --bind "$binds" --query "$cmd")
 
 	mpla=( ${(f)mpl} )
 
@@ -187,9 +185,9 @@ binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(cl
 prevwin='top,50%'
 
 if ! [ $blocks = 1 ]; then
-	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$kittyprev" --preview-window="$prevwin" "$cls" --bind "$binds")
+	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$kittyprev" --preview-window="$prevwin" "$cls" --bind "$binds" --query "$cmd")
 else
-	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$symbolsprev" --preview-window="$prevwin" "$cls" --bind "$binds")
+	mp=$(mpc listall -f %file%\\t"$MPC_FORMAT"|fzf +s -d "\t" --with-nth 2 --accept-nth 1 --preview "$symbolsprev" --preview-window="$prevwin" "$cls" --bind "$binds" --query "$cmd")
 fi
 
 mpa=( ${(f)mp} )
