@@ -68,6 +68,7 @@ case "${cmd[0]}" in
 	"yazi-keymap") $EDITOR ~/.config/yazi/keymap.toml ;;
 	"yazi-init") $EDITOR ~/.config/yazi/init.lua ;;
 	"wiremix") $EDITOR ~/.config/wiremix/wiremix.toml ;;
+	"neowall") $EDITOR ~/.config/neowall/config.vibe ;;
 	*)
 		echo "[cfg!] configuration shortcut [ ${cmd[0]} ] not defined"
 		echo "[cfg/] aborting"

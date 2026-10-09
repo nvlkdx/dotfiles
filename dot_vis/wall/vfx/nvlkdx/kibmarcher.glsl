@@ -30,6 +30,6 @@ void mainImage( out vec4 color, in vec2 coord ) {
     }
     vec3 n = norm(p);
     float bw = n.x+n.y;
-    bw *= SS(.9,.15,1./d);
-    color = vec4(vec3(bw),1.0)*0.15;
+    bw *= SS(.9,.15,1./d) * smoothstep(0., 5., T);
+    color = vec4(vec3(bw),1.0)*1;
 }
