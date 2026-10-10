@@ -38,7 +38,7 @@ binds {
 	XF86Explorer			{ spawn-sh "~/.sh/dsh network"; }
 	
 	// ROW 2 [TBD]
-	Muhenkan			{ spawn-sh "notify-send 2-1"; }
+	Muhenkan			{ spawn-sh "~/.sh/dsh calc"; }
 	Hangul_Hanja			{ spawn-sh "notify-send 2-2"; }
 	Hangul				{ spawn-sh "notify-send 2-3"; }
 	Henkan_Mode			{ spawn-sh "notify-send 2-4"; }

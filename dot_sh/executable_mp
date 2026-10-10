@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-source ~/.env/MPC_FORMAT &>/dev/null
-source ~/.env/FZF_DEFAULT_OPTS &>/dev/null
-source ~/.env/USR_MUSIC_DIR &>/dev/null
+! (( ${+MPC_FORMAT} )) && source ~/.env/MPC_FORMAT &>/dev/null
+! (( ${+FZF_DEFAULT_OPTS} )) && source ~/.env/FZF_DEFAULT_OPTS &>/dev/null
+! (( ${+USR_MUSIC_DIR} )) && source ~/.env/USR_MUSIC_DIR &>/dev/null
 
 cmd=("$@")
 
