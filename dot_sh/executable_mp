@@ -13,7 +13,7 @@ blocks=0
 desktop=0
 playlist=0
 
-playsleep="0.1"
+playsleep='0.1'
 
 banner() {
 	echo
@@ -23,8 +23,8 @@ banner() {
 	echo " ▒███ ▒███ ▒███  ▒███ ▒███"
 	echo " █████▒███ █████ ▒███████"
 	echo "▒▒▒▒▒ ▒▒▒ ▒▒▒▒▒  ▒███▒▒▒"
-	echo "                 ▒███" 
-	echo "                 █████"   
+	echo "                 ▒███"
+	echo "                 █████"
 	echo "                ▒▒▒▒▒"
 	echo
 }
@@ -130,27 +130,27 @@ fi
 if [ $playlist = 1 ]; then
 	prevwin='top,50%'
 	binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
-
+	
 	mpl=$(mpc lsplaylists|fzf --gap --gap-line='─' --preview 'mpc playlist {}' --preview-window="$prevwin" "$cls" --bind "$binds" --query "$cmd")
-
+	
 	mpla=( ${(f)mpl} )
-
+	
 	for i in {1..$#mpla}; do
 		if [[ ${mpla[$i][1,8]} == "MPMODE::" ]]; then
 			case "${mpla[$i]:8}" in
-				"TAILP" | "NEXTP") keep=1; queue=0; mpla[$i]=() ;; 
+				"TAILP" | "NEXTP") keep=1; queue=0; mpla[$i]=() ;;
 				"TAILQ" | "NEXTQ") keep=1; queue=1; mpla[$i]=() ;;
 				"CLEAR") keep=0; queue=0; mpla[$i]=() ;;
 				*) ;;
 			esac
 		fi
 	done
-
+	
 	if ! [[ "$mpl" == "" ]]; then
 		qs=$(mpc playlist|wc -l)
 		if ! [ $keep = 1 ]; then mpc -q clear; fi
 		for i in $mpla; do mpc -q load "$i" > /dev/null; done
-		if ! [ $queue = 1 ]; then 
+		if ! [ $queue = 1 ]; then
 			if [ $keep = 1 ]; then
 				mpc -q play $(( qs + 1 ))
 			else
@@ -196,7 +196,7 @@ for i in {1..$#mpa}; do
 	if [[ ${mpa[$i][1,8]} == "MPMODE::" ]]; then
 		case "${mpa[$i]:8}" in
 			"TAILP") keep=1; insert=0; queue=0; mpa[$i]=() ;;
-			"NEXTP") keep=1; insert=1; queue=0; mpa[$i]=() ;; 
+			"NEXTP") keep=1; insert=1; queue=0; mpa[$i]=() ;;
 			"TAILQ") keep=1; insert=0; queue=1; mpa[$i]=() ;;
 			"NEXTQ") keep=1; insert=1; queue=1; mpa[$i]=() ;;
 			"CLEAR") keep=0; insert=0; queue=0; mpa[$i]=() ;;
