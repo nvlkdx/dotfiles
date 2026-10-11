@@ -9,7 +9,6 @@ opt.autoindent = true
 opt.autoread = true
 opt.smartindent = true
 opt.gdefault = true
-opt.inccommand = 'split'
 opt.secure = true
 opt.undofile = false
 

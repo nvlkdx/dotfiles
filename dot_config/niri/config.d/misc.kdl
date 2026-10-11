@@ -8,8 +8,8 @@ screenshot-path "~/MDL/wastes/scr/%Y-%m-%d-%H-%M-%S.png"
 
 blur {
 	on
-	passes 3
-	offset 2
+	passes 2
+	offset 4
 	noise 0.02
 	saturation 0.5
 }

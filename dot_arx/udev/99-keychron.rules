@@ -1,0 +1,4 @@
+# Keychron Keyboard/Mouse udev rule for VIA / Keychron Launcher
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", MODE="0660", GROUP="anarxa", TAG+="uaccess", TAG+="udev-acl"
+# STM32 DFU bootloader rule (Keychron firmware flashing support)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE="0660", GROUP="anarxa", TAG+="uaccess", TAG+="udev-acl"

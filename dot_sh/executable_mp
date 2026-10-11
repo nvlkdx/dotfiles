@@ -29,7 +29,7 @@ banner() {
 	echo
 }
 
-DEPS=('mpc' 'fzf' 'chafa' 'ffmpeg')
+DEPS=('mpc' 'fzf' 'chafa' 'ffmpeg' 'exiftool')
 for dep in $DEPS; do whence -p $dep &>/dev/null || { echo -e "[mp!] mp relies on $dep\n[mp/] aborting"; exit 1 }; done
 
 export MUSDIR="${USR_MUSIC_DIR:-$XDG_MUSIC_DIR}"
@@ -165,6 +165,7 @@ fi
 
 # non-playlist
 
+exif_grab='exiftool -Picture -q -q -b $MUSDIR/{1}'
 ffmpeg_grab='ffmpeg -loglevel quiet -i file:$MUSDIR/{1} -an -c:v copy -f image2pipe -'
 mpc_grab='mpc readpicture {1}'
 
@@ -176,9 +177,9 @@ kp_txt_col0='\\033[0m'
 kp_txt_col1='\\033[1;32m'
 kp_txt_col2='\\033[1;31m'
 
-kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f %title% find filename {1})\" && { ${ffmpeg_grab} || ${mpc_grab} } | ${kp_chafa_img} 2>/dev/null || echo && printf \"${kp_txt_prefx} ${kp_txt_col1}ARTIST:${kp_txt_col0} \$(mpc -f %artist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUMARTIST:${kp_txt_col0} \$(mpc -f %albumartist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUM:${kp_txt_col0} \$(mpc -f %album% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}YEAR:${kp_txt_col0} \$(mpc -f %date% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}TRACK:${kp_txt_col0} \$(mpc -f '[%disc%-]%track%' find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}DURATION:${kp_txt_col0} \$(mpc -f %time% find filename {1})\\\n${kp_txt_prefx} \\\n${kp_txt_prefx} ${kp_txt_col2}FILE:${kp_txt_col0} {1}\\\n${kp_txt_prefx} ${kp_txt_col2}MODIFIED:${kp_txt_col0} \$(mpc -f %mtime% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col2}FORMAT:${kp_txt_col0} \$(mpc -f %audioformat% find filename {1})\""
+kittyprev="printf \"${kp_txt_prefx} ${kp_txt_col1}TITLE:${kp_txt_col0} \$(mpc -f %title% find filename {1})\" && { ${exif_grab} || ${ffmpeg_grab} || ${mpc_grab} } | ${kp_chafa_img} 2>/dev/null || echo && printf \"${kp_txt_prefx} ${kp_txt_col1}ARTIST:${kp_txt_col0} \$(mpc -f %artist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUMARTIST:${kp_txt_col0} \$(mpc -f %albumartist% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}ALBUM:${kp_txt_col0} \$(mpc -f %album% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}YEAR:${kp_txt_col0} \$(mpc -f %date% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}TRACK:${kp_txt_col0} \$(mpc -f '[%disc%-]%track%' find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col1}DURATION:${kp_txt_col0} \$(mpc -f %time% find filename {1})\\\n${kp_txt_prefx} \\\n${kp_txt_prefx} ${kp_txt_col2}FILE:${kp_txt_col0} {1}\\\n${kp_txt_prefx} ${kp_txt_col2}MODIFIED:${kp_txt_col0} \$(mpc -f %mtime% find filename {1})\\\n${kp_txt_prefx} ${kp_txt_col2}FORMAT:${kp_txt_col0} \$(mpc -f %audioformat% find filename {1})\""
 
-symbolsprev="{ ${ffmpeg_grab} || ${mpc_grab} } | ${sp_chafa_img} 2>/dev/null || echo"
+symbolsprev="{ ${exif_grab} || ${ffmpeg_grab} || ${mpc_grab} } | ${sp_chafa_img} 2>/dev/null || echo"
 
 binds='ctrl-s:select-all,ctrl-e:deselect-all,ctrl-t:toggle-all,ctrl-r:execute(clear),f1:reload(mpc listall -f %file%\\t$MPC_FORMAT)+change-preview-label(),f2:reload(mpc listall -f %file%\\t$MPC_FORMAT|shuf)+change-preview-label([ SHUF ]),f3:change-with-nth(1|2),f4:refresh-preview,enter:print(MPMODE::CLEAR)+accept,ctrl-space:print(MPMODE::TAILP)+accept,alt-space:print(MPMODE::NEXTP)+accept,ctrl-bs:print(MPMODE::TAILQ)+accept,alt-bs:print(MPMODE::NEXTQ)+accept'
 

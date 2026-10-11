@@ -157,6 +157,8 @@ binds {
 	Mod+Alt+P		{ power-off-monitors; }
 
 	Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+	SunProps		{ spawn "swaylock"; }
 }
 
 recent-windows {

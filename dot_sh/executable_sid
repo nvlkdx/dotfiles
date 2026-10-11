@@ -3,7 +3,7 @@
 cmd=("$@")
 
 if [[ $#cmd -gt 1 ]]; then
-	echo "[sid!] too many arguments\n[sid/] aborting"; exit 1; 
+	echo "[sid!] too many arguments\n[sid/] aborting"; exit 1;
 elif [[ $cmd[1] == <1-5> ]]; then
 	T=${cmd[1]}
 else
