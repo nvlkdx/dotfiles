@@ -9,7 +9,7 @@ elif [[ $cmd[1] == <1-5> ]]; then
 else
 	if [[ $#cmd -eq 1 ]]; then
 		echo "[sid.] makeshift sidonia theme switcher"
-		echo "[sid,] put themes at /boot/grub/themes/sid[1-5]"
+		echo "[sid,] put themes at /boot/grub/themes/sid[1-4]"
 		echo "[sid,] set size with \$SIDONIA_THEME_SIZE at ~/.env/"
 		echo "[sid,] run either with theme number as sole argument"
 		echo "[sid,] or without args for a random theme"

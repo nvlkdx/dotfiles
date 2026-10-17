@@ -3,49 +3,49 @@ binds {
 	// KNOBS
 	XF86AudioRaiseVolume		allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+ -l 1.0"; }
 	XF86AudioLowerVolume		allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }
-	XF86AudioPlay			allow-when-locked=true { spawn-sh "mpc toggle"; }
-	XF86AudioPrev			allow-when-locked=true { spawn-sh "mpc prev"; }
-	XF86AudioNext			allow-when-locked=true { spawn-sh "mpc next"; }
-	XF86AudioRewind			allow-when-locked=true { spawn-sh "mpc seek -2"; }
-	XF86AudioForward		allow-when-locked=true { spawn-sh "mpc seek +2"; }
-	XF86Forward			allow-when-locked=true { spawn-sh "mpc volume +2"; }
-	XF86Back			allow-when-locked=true { spawn-sh "mpc volume -2"; }
-	XF86AudioMute			allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-
+	XF86AudioPlay				allow-when-locked=true { spawn-sh "mpc toggle"; }
+	XF86AudioPrev				allow-when-locked=true { spawn-sh "mpc prev"; }
+	XF86AudioNext				allow-when-locked=true { spawn-sh "mpc next"; }
+	XF86AudioRewind				allow-when-locked=true { spawn-sh "mpc seek -2"; }
+	XF86AudioForward			allow-when-locked=true { spawn-sh "mpc seek +2"; }
+	XF86Forward					allow-when-locked=true { spawn-sh "mpc volume +2"; }
+	XF86Back					allow-when-locked=true { spawn-sh "mpc volume -2"; }
+	XF86AudioMute				allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+	
 	// ROW 1 [QUEUE CONTROLS]
-	XF86Tools			allow-when-locked=true { spawn-sh "mpc repeat"; }
-	XF86Launch5			allow-when-locked=true { spawn-sh "mpc random"; }
-	XF86Launch6			allow-when-locked=true { spawn-sh "mpc consume"; }
-	XF86Launch7			allow-when-locked=true { spawn-sh "mpc single"; }
-
+	XF86Tools					allow-when-locked=true { spawn-sh "mpc repeat"; }
+	XF86Launch5					allow-when-locked=true { spawn-sh "mpc random"; }
+	XF86Launch6					allow-when-locked=true { spawn-sh "mpc consume"; }
+	XF86Launch7					allow-when-locked=true { spawn-sh "mpc single"; }
+	
 	// ROW 2 [LOADING QUEUES]
-	XF86Launch8			allow-when-locked=true { spawn-sh "~/.sh/mmpc load-tmp-pl"; }
-	XF86Launch9			allow-when-locked=true { spawn-sh "~/.sh/mmpc load-album"; }
-	F19				allow-when-locked=true { spawn-sh "~/.sh/mmpc load-artist"; }
-	XF86AudioMicMute		allow-when-locked=true { spawn-sh "~/.sh/mmpc load-all"; }
-
+	XF86Launch8					allow-when-locked=true { spawn-sh "~/.sh/mmpc load-tmp-pl"; }
+	XF86Launch9					allow-when-locked=true { spawn-sh "~/.sh/mmpc load-album"; }
+	F19							allow-when-locked=true { spawn-sh "~/.sh/mmpc load-artist"; }
+	XF86AudioMicMute			allow-when-locked=true { spawn-sh "~/.sh/mmpc load-all"; }
+	
 	// ROW 3 [TMP PLAYLIST CONTROLS]
-	XF86TouchpadToggle		allow-when-locked=true { spawn-sh "~/.sh/mmpc add-tmp-pl"; }
-	XF86TouchpadOn			allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-prev-tmp-pl"; }
-	F23				allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-next-tmp-pl"; }
-	F24				allow-when-locked=true { spawn-sh "~/.sh/mmpc del-tmp-pl"; }
-
+	XF86TouchpadToggle			allow-when-locked=true { spawn-sh "~/.sh/mmpc add-tmp-pl"; }
+	XF86TouchpadOn				allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-prev-tmp-pl"; }
+	F23							allow-when-locked=true { spawn-sh "~/.sh/mmpc mv-next-tmp-pl"; }
+	F24							allow-when-locked=true { spawn-sh "~/.sh/mmpc del-tmp-pl"; }
+	
 	/// LAYER 2: LAUNCHER \\\
 	// ROW 1 [DESKTOP SHELL]
-	XF86Calculator			{ spawn-sh "~/.sh/dsh muspick"; }
-	XF86Mail			{ spawn-sh "~/.sh/dsh plpick"; }
-	XF86Open			{ spawn-sh "~/.sh/dsh mixer"; }
-	XF86Explorer			{ spawn-sh "~/.sh/dsh network"; }
+	XF86Calculator				{ spawn-sh "~/.sh/dsh muspick"; }
+	XF86Mail					{ spawn-sh "~/.sh/dsh plpick"; }
+	XF86Open					{ spawn-sh "~/.sh/dsh mixer"; }
+	XF86Explorer				{ spawn-sh "~/.sh/dsh network"; }
 	
 	// ROW 2 [TBD]
-	Muhenkan			{ spawn-sh "~/.sh/dsh calc"; }
-	Hangul_Hanja			{ spawn-sh "notify-send 2-2"; }
-	Hangul				{ spawn-sh "notify-send 2-3"; }
-	Henkan_Mode			{ spawn-sh "notify-send 2-4"; }
-
+	Muhenkan					{ spawn-sh "~/.sh/dsh calc"; }
+	Hangul_Hanja				{ spawn-sh "notify-send 2-2"; }
+	Hangul						{ spawn-sh "notify-send 2-3"; }
+	Henkan_Mode					{ spawn-sh "notify-send 2-4"; }
+	
 	// ROW 3 [TBD]
-	XF86HomePage			{ spawn-sh "notify-send 3-1"; }
-	XF86Reload			{ spawn-sh "notify-send 3-2"; }
-	XF86Favorites			{ spawn-sh "notify-send 3-3"; }
-	XF86Search			{ spawn-sh "notify-send 3-4"; }
+	XF86HomePage				{ spawn-sh "notify-send 3-1"; }
+	XF86Reload					{ spawn-sh "notify-send 3-2"; }
+	XF86Favorites				{ spawn-sh "notify-send 3-3"; }
+	XF86Search					{ spawn-sh "notify-send 3-4"; }
 }
