@@ -15,14 +15,14 @@ else
 		echo "[sid,] or without args for a random theme"
 		exit 0
 	else
-		T="$(shuf -n 1 -i 1-5)"
+		T="$(shuf -n 1 -i 1-4)"
 	fi
 fi
 
 ! (( ${+SIDONIA_THEME_SIZE} )) && source ~/.env/SIDONIA_THEME_SIZE &>/dev/null
 S=${SIDONIA_THEME_SIZE:="1440"}
 
-if [[ $T -eq 5 ]]; then
+if [[ $T -eq 4 ]]; then
 	F='ui.pf2'
 else
 	F="sidonia-t${T}-${S}p.pf2"
