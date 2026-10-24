@@ -1,10 +1,10 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 cmd=("$@")
 
 if [[ $#cmd -gt 1 ]]; then
 	echo "[sid!] too many arguments\n[sid/] aborting"; exit 1;
-elif [[ $cmd[1] == <1-5> ]]; then
+elif [[ $cmd[1] == <1-4> ]]; then
 	T=${cmd[1]}
 else
 	if [[ $#cmd -eq 1 ]]; then

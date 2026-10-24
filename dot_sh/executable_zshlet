@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 cmd=("$@")
 
@@ -10,9 +10,9 @@ chfont() {
 	case "$1" in
 		"future")
 			typeset -gA fnt
-
+			
 			fnt[CAP]=0
-
+			
 			fnt[a]='┏━┓\n┣━┫\n╹ ╹'
 			fnt[b]='┏┓ \n┣┻┓\n┗━┛'
 			fnt[c]='┏━╸\n┃  \n┗━╸'
@@ -39,7 +39,7 @@ chfont() {
 			fnt[x]='╻ ╻\n┏╋┛\n╹ ╹'
 			fnt[y]='╻ ╻\n┗┳┛\n ╹ '
 			fnt[z]='╺━┓\n┏━┛\n┗━╸'
-
+			
 			fnt[1]='╺┓ \n ┃ \n╺┻╸'
 			fnt[2]='┏━┓\n┏━┛\n┗━╸'
 			fnt[3]='┏━┓\n╺━┫\n┗━┛'
@@ -50,7 +50,7 @@ chfont() {
 			fnt[8]='┏━┓\n┣━┫\n┗━┛'
 			fnt[9]='┏━┓\n┗━┫\n┗━┛'
 			fnt[0]='┏━┓\n┃┃┃\n┗━┛'
-
+			
 			fnt[btc]=' ┓ \n   \n   '
 			fnt[tld]='   \n┏━┛\n   '
 			fnt[xcl]=' ╻ \n ╹ \n ╹ '
@@ -83,7 +83,7 @@ chfont() {
 			fnt[lth]='┏━ \n┃  \n┗━ '
 			fnt[gth]=' ━┓\n  ┃\n ━┛'	
 			fnt[int]='┏━┓\n ╺┛\n ╹ '
-
+			
 			fnt[BRK]='   \n   \n   '
 			;;
 		*)
